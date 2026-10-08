@@ -27,6 +27,15 @@
   dd { color: #333; }
   ul { margin: 0; padding-left: 22px; }
   footer { margin-top: 24px; font-size: 14px; }
+  details > summary { cursor: pointer; list-style: none; display: flex; align-items: baseline; gap: 12px; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary h2::before { content: "▸ "; }
+  details[open] > summary h2::before { content: "▾ "; }
+  details[open] .hint { display: none; }
+  .media { display: flex; flex-direction: column; gap: 28px; margin-top: 20px; }
+  figure { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+  figure iframe { width: 100%; aspect-ratio: 16 / 9; border: 1px solid #111; background: #000; }
+  figcaption { font-size: 15px; }
   @media (max-width: 720px) {
     body { font-size: 18px; }
     main { padding: 48px 20px; }
@@ -80,6 +89,29 @@
 
   <hr>
 
+  <details>
+    <summary><h2>AI media</h2> <span class="mono tag hint">[click to open]</span></summary>
+    <div class="media">
+      <figure>
+        <iframe src="https://drive.google.com/file/d/1iKjg0u2Wj5Boh7oFKX9EAJfj-EG_Es7j/preview" title="Intro" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
+        <figcaption class="mono">Intro</figcaption>
+      </figure>
+      <figure>
+        <iframe src="https://drive.google.com/file/d/1HwAID8PvPS9HVp6drkK5l7MojlFVfdjg/preview" title="Amul ad" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
+        <figcaption class="mono">Amul ad</figcaption>
+      </figure>
+      <figure>
+        <iframe src="https://drive.google.com/file/d/1IyfGsk9weIemZioVqUvlr0lrLwTiiJRD/preview" title="Future of Commerce" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
+        <figcaption class="mono">Future of Commerce</figcaption>
+      </figure>
+      <figure>
+        <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">Nike x India <a href="https://t.co/TKi3nqzyUV">pic.twitter.com/TKi3nqzyUV</a></p>&mdash; aditya chauhan (@ChasingImpetus) <a href="https://x.com/ChasingImpetus/status/1957035243996643789">August 17, 2025</a></blockquote>
+      </figure>
+    </div>
+  </details>
+
+  <hr>
+
   <h2>Right now</h2>
   <ul>
     <li>Exploring consumer hardware.</li>
@@ -91,5 +123,6 @@
 
   <footer class="mono">Last updated October 2026.</footer>
 </main>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </body>
 </html>
