@@ -35,6 +35,7 @@
   .media { display: flex; flex-direction: column; gap: 28px; margin-top: 20px; }
   figure { margin: 0; display: flex; flex-direction: column; gap: 6px; }
   figure iframe { width: 100%; aspect-ratio: 16 / 9; border: 1px solid #111; background: #000; }
+  figure iframe.vertical { aspect-ratio: 9 / 16; max-width: 340px; }
   figcaption { font-size: 15px; }
   @media (max-width: 720px) {
     body { font-size: 18px; }
@@ -97,7 +98,7 @@
         <figcaption class="mono">Intro</figcaption>
       </figure>
       <figure>
-        <iframe src="https://drive.google.com/file/d/1HwAID8PvPS9HVp6drkK5l7MojlFVfdjg/preview" title="Amul ad" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
+        <iframe class="vertical" src="https://drive.google.com/file/d/1HwAID8PvPS9HVp6drkK5l7MojlFVfdjg/preview" title="Amul ad" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
         <figcaption class="mono">Amul ad</figcaption>
       </figure>
       <figure>
