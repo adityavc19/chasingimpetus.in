@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Wire · Analytics</title>
+  <meta http-equiv="refresh" content="0; url=https://thewire.surge.sh/analytics.html">
+  <script>
+    (function() {
+      var target = 'https://thewire.surge.sh/analytics.html' + window.location.search + window.location.hash;
+      window.location.replace(target);
+    })();
+  </script>
+  <style>
+    body {
+      margin: 0; min-height: 100vh; background: #EFC24A; color: #1F1A19;
+      display: grid; place-items: center; font-family: sans-serif;
+    }
+    a { color: #B8432F; font-weight: 800; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <p>Loading analytics... <a id="redirect-link" href="https://thewire.surge.sh/analytics.html">Tap here if not redirected</a></p>
+  <script>
+    var link = document.getElementById('redirect-link');
+    if (link) {
+      link.href = 'https://thewire.surge.sh/analytics.html' + window.location.search + window.location.hash;
+    }
+  </script>
+</body>
+</html>
