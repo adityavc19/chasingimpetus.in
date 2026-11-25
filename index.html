@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aditya — Chasing Impetus</title>
-  <meta name="description" content="Aditya — solo founder in Bangalore building small consumer apps about attention, habits, films, and the stuff we save.">
+  <meta name="description" content="Aditya — product manager turned product builder, exploring AI-native services and consumer hardware.">
   <meta name="color-scheme" content="light dark">
   <script>
     try {
@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=5">
+  <link rel="stylesheet" href="./styles.css?v=8">
 </head>
 <body>
   <!-- Outer Top Website Header Bar (always visible outside the phone / tablet frame) -->
@@ -78,7 +78,7 @@
     <!-- Subtle Architectural Desktop Sidebar (visible only in Portrait Phone mode on wide screens) -->
     <aside class="desk-sidebar" aria-label="Device controls and telemetry">
       <h1 class="desk-title" id="desk-owner-name">Aditya</h1>
-      <p class="desk-tagline" id="desk-owner-tagline">Solo founder in Bangalore building small consumer apps about attention, habits, films, and the stuff we save.</p>
+      <p class="desk-tagline" id="desk-owner-tagline">Product manager turned product builder, exploring AI-native services and consumer hardware.</p>
 
       <div class="desk-controls">
         <button type="button" class="desk-pill" id="desk-mode-btn">
@@ -183,12 +183,12 @@
                   <span class="qs-tile-state" id="qs-sound-state">ON</span>
                 </button>
 
-                <button type="button" class="qs-tile" id="qs-glyph-toggle" aria-pressed="true">
+                <button type="button" class="qs-tile" id="qs-mono-toggle" aria-pressed="false">
                   <span class="qs-tile-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
                   </span>
-                  <span class="qs-tile-label">Edge Glow</span>
-                  <span class="qs-tile-state" id="qs-glyph-state">ON</span>
+                  <span class="qs-tile-label">Monochrome</span>
+                  <span class="qs-tile-state" id="qs-mono-state">COLOR</span>
                 </button>
 
                 <button type="button" class="qs-tile" id="qs-mode-action">
@@ -206,6 +206,18 @@
                   <span class="qs-tile-label">Lock Screen</span>
                   <span class="qs-tile-state">SLEEP</span>
                 </button>
+              </div>
+
+              <!-- Brightness Slider (Control Center) -->
+              <div class="qs-theme-group qs-brightness-group">
+                <div class="qs-slider-head">
+                  <span class="mono-caption">BRIGHTNESS</span>
+                  <span class="mono-micro" id="qs-brightness-val">100%</span>
+                </div>
+                <div class="qs-slider-row">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>
+                  <input type="range" id="qs-brightness-slider" class="qs-range" min="55" max="115" value="100" aria-label="Display brightness">
+                </div>
               </div>
 
               <!-- Wallpaper Selector -->
@@ -229,10 +241,12 @@
                 </div>
                 <p class="qs-theme-hint" id="qs-theme-hint">Following system preference</p>
               </fieldset>
+
+              <div class="qs-drag-handle" aria-hidden="true"><span></span></div>
             </div>
           </section>
 
-          <!-- Lock Screen Overlay -->
+          <!-- Lock Screen Overlay (First-time entry: Swipe up or Tap Fingerprint to unlock) -->
           <section class="lock-screen" id="lock-screen" aria-label="Lock Screen" hidden>
             <div class="lock-wallpaper" aria-hidden="true">
               <div class="lock-orb"></div>
@@ -241,24 +255,43 @@
 
             <div class="lock-top">
               <p class="lock-date" id="lock-date">Wed 25, Nov</p>
-              <div class="lock-clock" id="lock-clock">1745</div>
-              <div class="lock-widget-pill">
-                <span id="lock-status-text">Exploring neural hardware &amp; AI-native services</span>
+              <div class="lock-clock" id="lock-clock">17:45</div>
+              <div class="lock-identity">
+                <p class="lock-name">Aditya</p>
+                <p class="lock-sub" id="lock-status-text">Product manager turned product builder, exploring AI-native services and consumer hardware.</p>
+              </div>
+
+              <div class="lock-notifs" aria-label="Sneak peek notifications">
+                <div class="lock-notif-card">
+                  <span class="lock-notif-tag">MUSINGS</span>
+                  <span class="lock-notif-text" id="lock-notif-note">Designing for Attention in an Age of Infinite Scroll</span>
+                </div>
+                <div class="lock-notif-card">
+                  <span class="lock-notif-tag">PROJECTS</span>
+                  <span class="lock-notif-text">7 builds &amp; experiments · Unplug, Curia, Film Speed Run</span>
+                </div>
               </div>
             </div>
 
-            <div class="lock-bottom">
-              <button type="button" class="lock-corner-btn" id="lock-glyph-btn" aria-label="Pulse edge glow">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6c0 2-2 2-2 4v10a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V10c0-2-2-2-2-4V2h12v4z"/><line x1="6" y1="6" x2="18" y2="6"/></svg>
-              </button>
+            <div class="lock-bottom-wrap">
+              <div class="lock-bottom">
+                <button type="button" class="lock-corner-btn" id="lock-glyph-btn" aria-label="Toggle Monochrome">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
+                </button>
 
-              <button type="button" class="fingerprint-ring" id="unlock-btn" aria-label="Unlock">
-                <span class="sr-only">Tap to unlock</span>
-              </button>
+                <button type="button" class="fingerprint-ring" id="unlock-btn" aria-label="Tap or swipe up to unlock">
+                  <svg viewBox="0 0 36 36" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 2.5" aria-hidden="true">
+                    <circle cx="18" cy="18" r="14"/>
+                    <circle cx="18" cy="18" r="9"/>
+                    <circle cx="18" cy="18" r="4"/>
+                  </svg>
+                </button>
 
-              <button type="button" class="lock-corner-btn" id="lock-media-btn" aria-label="Quick open Media">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-              </button>
+                <button type="button" class="lock-corner-btn" id="lock-media-btn" aria-label="Quick open Media">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                </button>
+              </div>
+              <p class="lock-swipe-hint">SWIPE UP OR TAP TO UNLOCK</p>
             </div>
           </section>
 
@@ -274,20 +307,21 @@
                   <div class="n-widget widget-spotify" aria-label="Spotify On Rotation widget">
                     <div class="spotify-widget-head">
                       <span class="mono-caption" id="spotify-widget-label">ON ROTATION</span>
-                      <a class="spotify-open-link" id="spotify-open-link" href="https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn" target="_blank" rel="noopener noreferrer">OPEN ↗</a>
+                      <a class="spotify-open-link" id="spotify-open-link" href="https://open.spotify.com/playlist/6pC1LlCxbdEhLrBYXfDVFU?si=c3e3899144f14463" target="_blank" rel="noopener noreferrer">OPEN ↗</a>
                     </div>
                     <iframe
                       id="spotify-home-embed"
                       class="spotify-embed-frame"
                       title="Spotify On Rotation Player"
-                      src="https://open.spotify.com/embed/playlist/37i9dQZF1DWWQRwui0ExPn?utm_source=generator&theme=0"
+                      src="https://open.spotify.com/embed/playlist/6pC1LlCxbdEhLrBYXfDVFU?utm_source=generator&theme=0&si=c3e3899144f14463"
+                      allowfullscreen
                       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                       loading="lazy"
                     ></iframe>
                   </div>
 
                   <div class="notes-icon-row">
-                    <button type="button" class="n-icon-tile app-launcher" data-app="notes" aria-label="Open Notes and blog essays">
+                    <button type="button" class="n-icon-tile app-launcher" data-app="notes" aria-label="Open Musings and essays">
                       <span class="n-icon-circle app-tone-notes">
                         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -297,21 +331,41 @@
                         </svg>
                         <span class="n-icon-badge" id="badge-notes" aria-hidden="true">3</span>
                       </span>
-                      <span class="n-icon-label">Notes</span>
+                      <span class="n-icon-label">Musings</span>
+                    </button>
+
+                    <button type="button" class="n-icon-tile app-launcher" data-app="drift" aria-label="Open Drift">
+                      <span class="n-icon-circle app-tone-drift">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M18.178 8c5.096 0 5.096 8 0 8-5.095 0-7.133-8-12.739-8-4.585 0-4.585 8 0 8 5.606 0 7.644-8 12.74-8z"/>
+                        </svg>
+                      </span>
+                      <span class="n-icon-label">Drift</span>
                     </button>
                   </div>
                 </div>
 
-                <!-- MODULE B: Full-Width Wanderer Artwork / Media Card -->
-                <button type="button" class="n-widget widget-photo-banner app-launcher" data-app="media" aria-label="Open Media videos and reels">
-                  <img src="./assets/wanderer.jpg" alt="Wanderer above the Sea of Fog by Caspar David Friedrich" class="photo-banner-img">
+                <!-- MODULE B: Curated Auto-Rotating Artwork / Media Card -->
+                <div class="n-widget widget-photo-banner" aria-label="Curated imagery and Media">
+                  <button type="button" class="photo-banner-trigger app-launcher" data-app="media" aria-label="Open Media videos and archive">
+                    <img src="./assets/wanderer.jpg" alt="Wanderer above the Sea of Fog" class="photo-banner-img" id="gallery-img">
+                  </button>
                   <div class="photo-banner-overlay">
-                    <span class="frosted-tag">MEDIA · VISUAL ARCHIVE</span>
-                    <span class="photo-play-pill" aria-hidden="true">
-                      <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><polygon points="7,5 19,12 7,19"/></svg>
-                    </span>
+                    <div class="gallery-caption-wrap">
+                      <span class="frosted-tag" id="gallery-title">Wanderer above the Sea of Fog</span>
+                      <span class="gallery-credit" id="gallery-credit">Caspar David Friedrich · 1818</span>
+                    </div>
+                    <div class="gallery-controls">
+                      <button type="button" class="gallery-ctrl-btn" id="gallery-pause-btn" aria-label="Pause artwork rotation" title="Pause / Play rotation">
+                        <svg class="gal-icon-pause" viewBox="0 0 24 24" width="11" height="11" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                        <svg class="gal-icon-play" viewBox="0 0 24 24" width="11" height="11" fill="currentColor" aria-hidden="true" hidden><polygon points="7,4 20,12 7,20"/></svg>
+                      </button>
+                      <button type="button" class="gallery-ctrl-btn" id="gallery-next-btn" aria-label="Next curated image" title="Next image">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+                      </button>
+                    </div>
                   </div>
-                </button>
+                </div>
 
                 <!-- MODULE C: Serif Shelf + Colored Internal Projects & Bio Circles + Dot-Matrix Clock -->
                 <div class="bento-row-bottom">
@@ -353,10 +407,10 @@
                   </button>
                 </div>
 
-                <!-- DESKTOP-ONLY EXTRA MODULE: Pinned Essay Preview Card -->
-                <button type="button" class="n-widget widget-desktop-note app-launcher" data-app="notes" aria-label="Pinned essay preview. Open Notes.">
+                <!-- DESKTOP-ONLY EXTRA MODULE: Pinned Musing Preview Card -->
+                <button type="button" class="n-widget widget-desktop-note app-launcher" data-app="notes" aria-label="Pinned musing preview. Open Musings.">
                   <div class="desktop-note-head">
-                    <span class="mono-caption">PINNED ESSAY</span>
+                    <span class="mono-caption">MUSINGS</span>
                     <span class="tag-pill" id="desktop-note-date">OCT 2026</span>
                   </div>
                   <h3 class="desktop-note-title" id="desktop-note-title">Designing for Attention in an Age of Infinite Scroll</h3>
@@ -370,84 +424,26 @@
                 <span></span>
               </div>
 
-              <!-- Unified Dock: Colored Internal Apps | Divider | Monochrome External Profile Redirects -->
-              <nav class="nothing-dock" aria-label="Apps and external links">
-                <!-- COLORED INTERNAL APPS (open inside this site) -->
-                <button type="button" class="dock-icon app-tone-notes app-launcher" data-app="notes" aria-label="Notes">
-                  <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                    <line x1="8" y1="13" x2="16" y2="13"/>
-                    <line x1="8" y1="17" x2="13" y2="17"/>
-                  </svg>
-                  <span class="dock-tooltip">Notes</span>
-                </button>
-
-                <button type="button" class="dock-icon app-tone-projects app-launcher" data-app="github" aria-label="Projects">
-                  <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-                  </svg>
-                  <span class="dock-tooltip">Projects</span>
-                </button>
-
-                <button type="button" class="dock-icon app-tone-media dock-desktop-only app-launcher" data-app="media" aria-label="Media">
-                  <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <rect x="2" y="4" width="20" height="16" rx="3"/>
-                    <polygon points="10 9 16 12 10 15 10 9" fill="currentColor" stroke="none"/>
-                  </svg>
-                  <span class="dock-tooltip">Media</span>
-                </button>
-
-                <button type="button" class="dock-icon app-tone-shelf app-launcher" data-app="shelf" aria-label="Shelf">
-                  <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                  </svg>
-                  <span class="dock-tooltip">Shelf</span>
-                </button>
-
-                <button type="button" class="dock-icon app-tone-bio app-launcher" data-app="about" aria-label="Bio">
-                  <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <rect x="3" y="4" width="18" height="16" rx="3"/>
-                    <circle cx="9" cy="10.5" r="2"/>
-                    <path d="M6.2 16a3 3 0 0 1 5.6 0"/>
-                    <line x1="14" y1="9.5" x2="18" y2="9.5"/>
-                    <line x1="14" y1="13.5" x2="17" y2="13.5"/>
-                  </svg>
-                  <span class="dock-tooltip">Bio</span>
-                </button>
-
-                <!-- DIVIDER BETWEEN INTERNAL APPS AND EXTERNAL REDIRECTS -->
-                <span class="dock-divider dock-desktop-only" aria-hidden="true"></span>
-
-                <!-- MONOCHROME EXTERNAL PROFILE REDIRECTS -->
-                <a class="dock-icon dock-external dock-desktop-only" href="https://x.com/ChasingImpetus" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter (opens external profile)">
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                  <span class="dock-tooltip">Twitter ↗</span>
-                </a>
-
-                <a class="dock-icon dock-external dock-desktop-only" href="https://www.linkedin.com/in/aditya-chauhan-27b298177/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn (opens external profile)">
-                  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-                  <span class="dock-tooltip">LinkedIn ↗</span>
-                </a>
-
-                <a class="dock-icon dock-external dock-desktop-only" href="https://github.com/adityavc19" target="_blank" rel="noopener noreferrer" aria-label="GitHub (opens external profile)">
+              <!-- Bottom Dock: External Profile Redirects ONLY (zero duplication with Home Screen apps) -->
+              <nav class="nothing-dock" aria-label="External profiles">
+                <a class="dock-icon dock-external" href="https://github.com/adityavc19" target="_blank" rel="noopener noreferrer" aria-label="GitHub (opens external profile)">
                   <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                   <span class="dock-tooltip">GitHub ↗</span>
                 </a>
 
-                <a class="dock-icon dock-external dock-desktop-only" href="mailto:adityachauhan090@gmail.com" aria-label="Email Aditya">
+                <a class="dock-icon dock-external" href="https://www.linkedin.com/in/aditya-chauhan-27b298177/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn (opens external profile)">
+                  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                  <span class="dock-tooltip">LinkedIn ↗</span>
+                </a>
+
+                <a class="dock-icon dock-external" href="mailto:adityachauhan090@gmail.com" aria-label="Email Aditya">
                   <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                   <span class="dock-tooltip">Email ↗</span>
                 </a>
 
-                <a class="dock-icon dock-external dock-desktop-only" href="https://letterboxd.com/" target="_blank" rel="noopener noreferrer" aria-label="Letterboxd (opens external profile)">
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                    <circle cx="7" cy="12" r="3.4"/>
-                    <circle cx="12" cy="12" r="3.4"/>
-                    <circle cx="17" cy="12" r="3.4"/>
-                  </svg>
-                  <span class="dock-tooltip">Letterboxd ↗</span>
+                <a class="dock-icon dock-external" href="https://x.com/ChasingImpetus" target="_blank" rel="noopener noreferrer" aria-label="Twitter / X (opens external profile)">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  <span class="dock-tooltip">Twitter ↗</span>
                 </a>
               </nav>
             </section>
@@ -481,6 +477,6 @@
     </main>
   </div>
 
-  <script type="module" src="./app.js?v=5"></script>
+  <script type="module" src="./app.js?v=9"></script>
 </body>
 </html>

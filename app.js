@@ -1,4 +1,4 @@
-import { PORTFOLIO_DATA } from "./data.js?v=5";
+import { PORTFOLIO_DATA } from "./data.js?v=9";
 
 // ============================================================================
 // STATE
@@ -16,7 +16,10 @@ const state = {
   currentTrackIndex: 0,
   isPlaying: false,
   soundEnabled: true,
-  glyphEnabled: true,
+  monochrome: false,
+  brightness: 100,
+  galleryIndex: 0,
+  galleryPaused: false,
   isLocked: false,
   qsOpen: false,
   wallpaper: "pixel",
@@ -63,8 +66,10 @@ const els = {
   qsCloseBtn: document.getElementById("qs-close-btn"),
   qsSoundToggle: document.getElementById("qs-sound-toggle"),
   qsSoundState: document.getElementById("qs-sound-state"),
-  qsGlyphToggle: document.getElementById("qs-glyph-toggle"),
-  qsGlyphState: document.getElementById("qs-glyph-state"),
+  qsMonoToggle: document.getElementById("qs-mono-toggle"),
+  qsMonoState: document.getElementById("qs-mono-state"),
+  qsBrightnessSlider: document.getElementById("qs-brightness-slider"),
+  qsBrightnessVal: document.getElementById("qs-brightness-val"),
   qsModeAction: document.getElementById("qs-mode-action"),
   qsModeState: document.getElementById("qs-mode-state"),
   qsLockAction: document.getElementById("qs-lock-action"),
@@ -76,6 +81,7 @@ const els = {
   lockDate: document.getElementById("lock-date"),
   lockClock: document.getElementById("lock-clock"),
   lockStatusText: document.getElementById("lock-status-text"),
+  lockNotifNote: document.getElementById("lock-notif-note"),
   lockGlyphBtn: document.getElementById("lock-glyph-btn"),
   lockMediaBtn: document.getElementById("lock-media-btn"),
   unlockBtn: document.getElementById("unlock-btn"),
@@ -85,6 +91,11 @@ const els = {
   spotifyWidgetLabel: document.getElementById("spotify-widget-label"),
   spotifyOpenLink: document.getElementById("spotify-open-link"),
   spotifyHomeEmbed: document.getElementById("spotify-home-embed"),
+  galleryImg: document.getElementById("gallery-img"),
+  galleryTitle: document.getElementById("gallery-title"),
+  galleryCredit: document.getElementById("gallery-credit"),
+  galleryPauseBtn: document.getElementById("gallery-pause-btn"),
+  galleryNextBtn: document.getElementById("gallery-next-btn"),
   badgeNotes: document.getElementById("badge-notes"),
   widgetWeekday: document.getElementById("widget-weekday"),
   widgetDateShort: document.getElementById("widget-date-short"),
@@ -198,7 +209,6 @@ function startAmbientSynth(baseFreq = 220) {
 let glyphTimer = null;
 
 function triggerGlyphPulse() {
-  if (!state.glyphEnabled) return;
   els.glyphAura.classList.remove("pulsing");
   void els.glyphAura.offsetWidth;
   els.glyphAura.classList.add("pulsing");
@@ -206,6 +216,73 @@ function triggerGlyphPulse() {
   glyphTimer = setTimeout(() => {
     els.glyphAura.classList.remove("pulsing");
   }, 950);
+}
+
+function setMonochrome(enabled) {
+  state.monochrome = Boolean(enabled);
+  els.phoneScreen.style.setProperty("--screen-mono", state.monochrome ? "1" : "0");
+  els.qsMonoToggle?.setAttribute("aria-pressed", String(state.monochrome));
+  if (els.qsMonoState) {
+    els.qsMonoState.textContent = state.monochrome ? "MONO" : "COLOR";
+  }
+  try {
+    localStorage.setItem("chasingimpetus-mono", state.monochrome ? "1" : "0");
+  } catch (_) {}
+}
+
+function setBrightness(percent) {
+  const clamped = Math.max(55, Math.min(115, Number(percent) || 100));
+  state.brightness = clamped;
+  els.phoneScreen.style.setProperty("--screen-brightness", String(clamped / 100));
+  if (els.qsBrightnessSlider) els.qsBrightnessSlider.value = String(clamped);
+  if (els.qsBrightnessVal) els.qsBrightnessVal.textContent = `${clamped}%`;
+}
+
+// ============================================================================
+// CURATED AUTO-ROTATING GALLERY WIDGET
+// ============================================================================
+
+let galleryInterval = null;
+
+function renderGalleryFrame() {
+  const items = PORTFOLIO_DATA.gallery;
+  if (!items?.length || !els.galleryImg) return;
+  const item = items[state.galleryIndex % items.length];
+  els.galleryImg.src = item.src;
+  els.galleryImg.alt = item.title;
+  els.galleryImg.style.objectPosition = item.position || "center 40%";
+  if (els.galleryTitle) els.galleryTitle.textContent = item.title;
+  if (els.galleryCredit) els.galleryCredit.textContent = item.credit;
+}
+
+function stepGallery() {
+  const items = PORTFOLIO_DATA.gallery;
+  if (!items?.length) return;
+  state.galleryIndex = (state.galleryIndex + 1) % items.length;
+  renderGalleryFrame();
+}
+
+function setGalleryPaused(paused) {
+  state.galleryPaused = Boolean(paused);
+  clearInterval(galleryInterval);
+  if (!state.galleryPaused) {
+    galleryInterval = setInterval(stepGallery, 12000);
+  }
+  if (els.galleryPauseBtn) {
+    const pauseIcon = els.galleryPauseBtn.querySelector(".gal-icon-pause");
+    const playIcon = els.galleryPauseBtn.querySelector(".gal-icon-play");
+    els.galleryPauseBtn.setAttribute(
+      "aria-label",
+      state.galleryPaused ? "Resume artwork rotation" : "Pause artwork rotation"
+    );
+    if (state.galleryPaused) {
+      pauseIcon?.setAttribute("hidden", "");
+      playIcon?.removeAttribute("hidden");
+    } else {
+      pauseIcon?.removeAttribute("hidden");
+      playIcon?.setAttribute("hidden", "");
+    }
+  }
 }
 
 function setWallpaper(name) {
@@ -312,7 +389,7 @@ function updateClocks() {
 
   els.statusTime.textContent = timeStr;
   els.widgetClock.textContent = timeStr;
-  els.lockClock.textContent = `${hours}${mins}`;
+  els.lockClock.textContent = timeStr;
   els.widgetWeekday.textContent = weekdayLong;
   els.widgetDateShort.textContent = `${dayNum} ${monthShort.toUpperCase()}`;
   els.qsDate.textContent = `${weekdayShort.toUpperCase()}, ${monthShort.toUpperCase()} ${dayNum}`;
@@ -330,7 +407,7 @@ function hydrateStaticData() {
   els.deskName.textContent = profile.name;
   els.deskTagline.textContent = profile.tagline;
   els.widgetOwner.textContent = profile.name.toUpperCase();
-  els.lockStatusText.textContent = profile.status;
+  els.lockStatusText.textContent = profile.tagline;
   els.badgeNotes.textContent = String(notes.length);
 
   const pinned = notes.find((n) => n.pinned) ?? notes[0];
@@ -338,6 +415,9 @@ function hydrateStaticData() {
     els.desktopNoteDate.textContent = pinned.date.toUpperCase();
     els.desktopNoteTitle.textContent = pinned.title;
     els.desktopNoteExcerpt.textContent = pinned.excerpt;
+  }
+  if (pinned && els.lockNotifNote) {
+    els.lockNotifNote.textContent = pinned.title;
   }
 
   if (els.changelogList && profile.changelog?.length) {
@@ -446,19 +526,43 @@ function setQuickSettings(open) {
   }
 }
 
-function setLocked(locked) {
+function setLocked(locked, silent = false) {
   state.isLocked = locked;
   if (locked) {
     setQuickSettings(false);
+    els.lockScreen.classList.remove("unlocking");
+    els.lockScreen.hidden = false;
+    if (!silent) {
+      playClickSound(440);
+      triggerGlyphPulse();
+    }
+    els.unlockBtn?.focus();
+    return;
   }
-  els.lockScreen.hidden = !locked;
-  playClickSound(locked ? 440 : 820);
-  triggerGlyphPulse();
-  if (locked) {
-    els.unlockBtn.focus();
-  } else {
+
+  try {
+    sessionStorage.setItem("chasingimpetus-unlocked", "1");
+  } catch (_) {}
+
+  if (!silent) {
+    playClickSound(720);
+    setTimeout(() => playClickSound(960), 65);
+    triggerGlyphPulse();
+  }
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reducedMotion || els.lockScreen.hidden) {
+    els.lockScreen.hidden = true;
     (state.activeApp ? els.appViewTitle : els.homeHeading).focus();
+    return;
   }
+
+  els.lockScreen.classList.add("unlocking");
+  setTimeout(() => {
+    els.lockScreen.hidden = true;
+    els.lockScreen.classList.remove("unlocking");
+    (state.activeApp ? els.appViewTitle : els.homeHeading).focus();
+  }, 320);
 }
 
 // ============================================================================
@@ -466,12 +570,13 @@ function setLocked(locked) {
 // ============================================================================
 
 const APP_META = {
-  notes: { title: "Notes", subtitle: "BLOGS & ESSAYS" },
+  notes: { title: "Musings", subtitle: "ESSAYS & THOUGHTS" },
   github: { title: "Projects", subtitle: "BUILDS & EXPERIMENTS" },
   media: { title: "Media", subtitle: "VIDEO ESSAYS & VISUALS" },
   shelf: { title: "Shelf", subtitle: "FILMS & BOOKS LOG" },
   music: { title: "Music", subtitle: "ON ROTATION" },
-  about: { title: "Aditya", subtitle: "BANGALORE, INDIA" }
+  about: { title: "Aditya", subtitle: "PRODUCT BUILDER" },
+  drift: { title: "Drift", subtitle: "REEL CAPTURE · LIVE FEED" }
 };
 
 function clearSelectedAppClasses() {
@@ -499,6 +604,9 @@ function renderActiveApp() {
       break;
     case "about":
       renderAboutApp();
+      break;
+    case "drift":
+      renderDriftApp();
       break;
   }
 }
@@ -548,6 +656,7 @@ function goHome() {
   if (!state.activeApp) return;
 
   playClickSound(520);
+  cleanupDrift();
 
   const applyDOM = () => {
     state.activeApp = null;
@@ -592,7 +701,7 @@ function renderNotesApp() {
     const note = notes.find((n) => n.id === state.activeNoteId);
     if (note) {
       els.appViewBody.innerHTML = `
-        <button type="button" class="article-back-link" id="note-back-list">← ALL NOTES</button>
+        <button type="button" class="article-back-link" id="note-back-list">← ALL MUSINGS</button>
         <article class="n-card">
           <div class="n-card-meta">
             <span>${esc(note.date)}</span>
@@ -914,13 +1023,33 @@ function renderAboutApp() {
         .map(
           (row) => `
         <div class="now-item">
-          <span class="mono-micro" style="color: var(--nothing-red);">${esc(row.label)}</span>
+          <span class="mono-micro" style="color: var(--text-muted);">${esc(row.label)}</span>
           <span style="font-size: 0.84rem; font-weight: 500;">${esc(row.value)}</span>
         </div>
       `
         )
         .join("")}
     </div>
+
+    ${
+      profile.experiments?.length
+        ? `
+      <p class="mono-caption">EXPERIMENTS</p>
+      <div class="now-grid">
+        ${profile.experiments
+          .map(
+            (row) => `
+          <div class="now-item">
+            <span class="mono-micro" style="color: var(--text-muted);">${esc(row.label)}</span>
+            <span style="font-size: 0.84rem; font-weight: 500;">${esc(row.value)}</span>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    `
+        : ""
+    }
 
     ${
       profile.past?.length
@@ -963,6 +1092,154 @@ function renderAboutApp() {
         .join("")}
     </div>
   `;
+}
+
+// ============================================================================
+// MINI-APP 7: DRIFT (Infinite Scroll Simulator · Reel Capture + Unplug)
+// ============================================================================
+
+let driftTimer = null;
+let driftObserver = null;
+let driftScrollHandler = null;
+
+function cleanupDrift() {
+  clearInterval(driftTimer);
+  driftTimer = null;
+  if (driftObserver) {
+    driftObserver.disconnect();
+    driftObserver = null;
+  }
+  if (driftScrollHandler) {
+    els.appViewBody.removeEventListener("scroll", driftScrollHandler);
+    driftScrollHandler = null;
+  }
+}
+
+function renderDriftApp() {
+  cleanupDrift();
+  const pool = PORTFOLIO_DATA.driftFeed ?? [];
+  let cardsShown = 0;
+  let maxScrollPx = 0;
+  let secondsElapsed = 0;
+
+  els.appViewBody.innerHTML = `
+    <div class="drift-hud" aria-live="off">
+      <div class="drift-stat">
+        <span class="mono-micro">DISTANCE</span>
+        <span class="drift-stat-val" id="drift-dist">0.0m</span>
+      </div>
+      <div class="drift-stat">
+        <span class="mono-micro">TIME IN FEED</span>
+        <span class="drift-stat-val" id="drift-time">00:00</span>
+      </div>
+      <div class="drift-stat">
+        <span class="mono-micro">CARDS</span>
+        <span class="drift-stat-val" id="drift-cards">0</span>
+      </div>
+    </div>
+    <div class="drift-feed" id="drift-feed"></div>
+    <div id="drift-sentinel" style="height: 24px;"></div>
+  `;
+
+  const feedEl = document.getElementById("drift-feed");
+  const distEl = document.getElementById("drift-dist");
+  const timeEl = document.getElementById("drift-time");
+  const cardsEl = document.getElementById("drift-cards");
+  const sentinelEl = document.getElementById("drift-sentinel");
+
+  function formatDuration(sec) {
+    const m = String(Math.floor(sec / 60)).padStart(2, "0");
+    const s = String(sec % 60).padStart(2, "0");
+    return `${m}:${s}`;
+  }
+
+  function getMeters() {
+    return (maxScrollPx / 320).toFixed(1);
+  }
+
+  function showReceipt() {
+    cleanupDrift();
+    playClickSound(820);
+    const meters = getMeters();
+    const timeStr = formatDuration(secondsElapsed);
+    els.appViewBody.innerHTML = `
+      <div class="drift-receipt">
+        <div class="n-card-meta">
+          <span>UNPLUG RECEIPT</span>
+          <span>REEL CAPTURE</span>
+        </div>
+        <h3 class="drift-card-title">Loop broken.</h3>
+        <p class="n-card-desc">You scrolled <strong>${meters} meters</strong> across <strong>${cardsShown} cards</strong> in <strong>${timeStr}</strong>—on a personal website.</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px;">
+          <button type="button" class="drift-unplug-btn" id="receipt-home-btn" style="background: var(--text); color: var(--screen-bg);">RETURN HOME</button>
+          <button type="button" class="drift-unplug-btn" id="receipt-mono-btn" style="background: var(--widget-bg-alt); color: var(--text);">${state.monochrome ? "RESTORE COLOR" : "TRY MONOCHROME"}</button>
+        </div>
+      </div>
+    `;
+    document.getElementById("receipt-home-btn")?.addEventListener("click", goHome);
+    document.getElementById("receipt-mono-btn")?.addEventListener("click", () => {
+      playClickSound(700);
+      setMonochrome(!state.monochrome);
+      goHome();
+    });
+  }
+
+  function appendBatch(count = 5) {
+    for (let i = 0; i < count; i++) {
+      cardsShown += 1;
+
+      if (cardsShown > 1 && cardsShown % 6 === 0) {
+        const unplugCard = document.createElement("article");
+        unplugCard.className = "drift-unplug-card";
+        unplugCard.innerHTML = `
+          <span class="mono-micro" style="color: inherit; opacity: 0.72;">UNPLUG INTERVENTION · ${getMeters()}M SCROLLED</span>
+          <h3 class="drift-card-title" style="color: inherit;">Still scrolling? Tap the puck to break the loop.</h3>
+          <button type="button" class="drift-unplug-btn">UNPLUG NOW</button>
+        `;
+        unplugCard.querySelector("button").addEventListener("click", showReceipt);
+        feedEl.appendChild(unplugCard);
+      } else {
+        const item = pool[(cardsShown - 1) % pool.length];
+        const card = document.createElement("article");
+        card.className = "drift-card";
+        card.innerHTML = `
+          <div class="n-card-meta">
+            <span>${esc(item.tag)}</span>
+            <span>#${String(cardsShown).padStart(2, "0")}</span>
+          </div>
+          <h3 class="drift-card-title">${esc(item.title)}</h3>
+          <p class="n-card-desc">${esc(item.body)}</p>
+        `;
+        feedEl.appendChild(card);
+      }
+    }
+    if (cardsEl) cardsEl.textContent = String(cardsShown);
+  }
+
+  appendBatch(6);
+
+  driftTimer = setInterval(() => {
+    secondsElapsed += 1;
+    if (timeEl) timeEl.textContent = formatDuration(secondsElapsed);
+  }, 1000);
+
+  driftScrollHandler = () => {
+    if (els.appViewBody.scrollTop > maxScrollPx) {
+      maxScrollPx = els.appViewBody.scrollTop;
+      if (distEl) distEl.textContent = `${getMeters()}m`;
+    }
+  };
+  els.appViewBody.addEventListener("scroll", driftScrollHandler, { passive: true });
+
+  driftObserver = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        appendBatch(4);
+      }
+    },
+    { root: els.appViewBody, rootMargin: "120px" }
+  );
+  driftObserver.observe(sentinelEl);
 }
 
 // ============================================================================
@@ -1028,13 +1305,140 @@ function bindEvents() {
 
   els.qsSoundToggle.addEventListener("click", toggleSoundState);
 
-  els.qsGlyphToggle.addEventListener("click", () => {
-    state.glyphEnabled = !state.glyphEnabled;
-    els.qsGlyphToggle.setAttribute("aria-pressed", String(state.glyphEnabled));
-    els.qsGlyphState.textContent = state.glyphEnabled ? "ON" : "OFF";
+  els.qsMonoToggle?.addEventListener("click", () => {
     playClickSound(700);
-    if (state.glyphEnabled) triggerGlyphPulse();
+    setMonochrome(!state.monochrome);
   });
+
+  els.qsBrightnessSlider?.addEventListener("input", (e) => {
+    setBrightness(e.target.value);
+  });
+
+  els.galleryPauseBtn?.addEventListener("click", () => {
+    playClickSound(640);
+    setGalleryPaused(!state.galleryPaused);
+  });
+
+  els.galleryNextBtn?.addEventListener("click", () => {
+    playClickSound(700);
+    stepGallery();
+  });
+
+  // Pull-down drag gesture from Status Bar OR Top Header to open Control Center (with live tracking)
+  // Plus swipe-up drag gesture on Control Center to dismiss it
+  const qsPanel = els.quickSettings.querySelector(".qs-panel");
+  const dragSources = [document.querySelector(".status-bar"), document.querySelector(".site-topbar")].filter(Boolean);
+
+  let pullMode = null; // "open" | "close" | null
+  let pullStartY = 0;
+  let pullDeltaY = 0;
+
+  function resetQsTransform() {
+    if (!qsPanel) return;
+    qsPanel.classList.remove("dragging");
+    qsPanel.style.transform = "";
+    qsPanel.style.opacity = "";
+  }
+
+  dragSources.forEach((source) => {
+    source.addEventListener("pointerdown", (e) => {
+      if (state.isLocked || state.qsOpen) return;
+      // Ignore drags starting on links or range inputs
+      if (e.target.closest("a, input")) return;
+      pullMode = "open";
+      pullStartY = e.clientY;
+      pullDeltaY = 0;
+    });
+  });
+
+  els.quickSettings.addEventListener("pointerdown", (e) => {
+    if (!state.qsOpen) return;
+    if (e.target.closest("input[type='range']")) return;
+    pullMode = "close";
+    pullStartY = e.clientY;
+    pullDeltaY = 0;
+  });
+
+  window.addEventListener("pointermove", (e) => {
+    if (!pullMode) return;
+    pullDeltaY = e.clientY - pullStartY;
+
+    if (pullMode === "open" && pullDeltaY > 12) {
+      if (els.quickSettings.hidden) {
+        els.quickSettings.hidden = false;
+      }
+      if (qsPanel) {
+        const clamped = Math.min(pullDeltaY, 160);
+        const progress = clamped / 160;
+        qsPanel.classList.add("dragging");
+        qsPanel.style.transform = `translateY(${Math.round((progress - 1) * 90)}px)`;
+        qsPanel.style.opacity = String(Math.max(0.25, progress));
+      }
+    } else if (pullMode === "close" && pullDeltaY < -10) {
+      if (qsPanel) {
+        const clamped = Math.max(pullDeltaY, -160);
+        const progress = 1 + clamped / 160;
+        qsPanel.classList.add("dragging");
+        qsPanel.style.transform = `translateY(${Math.round(clamped * 0.6)}px)`;
+        qsPanel.style.opacity = String(Math.max(0.25, progress));
+      }
+    }
+  });
+
+  window.addEventListener("pointerup", () => {
+    if (!pullMode) return;
+    const mode = pullMode;
+    const delta = pullDeltaY;
+    pullMode = null;
+    pullDeltaY = 0;
+    resetQsTransform();
+
+    if (mode === "open") {
+      if (delta > 36) {
+        setQuickSettings(true);
+      } else if (!state.qsOpen) {
+        els.quickSettings.hidden = true;
+      }
+    } else if (mode === "close") {
+      if (delta < -36) {
+        setQuickSettings(false);
+      }
+    }
+  });
+
+  window.addEventListener("pointercancel", () => {
+    if (!pullMode) return;
+    const wasOpen = state.qsOpen;
+    pullMode = null;
+    pullDeltaY = 0;
+    resetQsTransform();
+    els.quickSettings.hidden = !wasOpen;
+  });
+
+  // Swipe-up gesture on Lock Screen to unlock
+  let lockStartY = null;
+  els.lockScreen.addEventListener("pointerdown", (e) => {
+    if (e.target.closest("button")) return;
+    lockStartY = e.clientY;
+  });
+  els.lockScreen.addEventListener("pointermove", (e) => {
+    if (lockStartY !== null && lockStartY - e.clientY > 48 && state.isLocked) {
+      lockStartY = null;
+      setLocked(false);
+    }
+  });
+  els.lockScreen.addEventListener("pointerup", () => {
+    lockStartY = null;
+  });
+  els.lockScreen.addEventListener(
+    "wheel",
+    (e) => {
+      if (state.isLocked && Math.abs(e.deltaY) > 25) {
+        setLocked(false);
+      }
+    },
+    { passive: true }
+  );
 
   els.qsLockAction.addEventListener("click", () => setLocked(true));
   els.qsModeAction?.addEventListener("click", () => {
@@ -1069,8 +1473,8 @@ function bindEvents() {
   els.hwPowerBtn.addEventListener("click", () => setLocked(!state.isLocked));
   els.unlockBtn.addEventListener("click", () => setLocked(false));
   els.lockGlyphBtn.addEventListener("click", () => {
-    playClickSound(740);
-    triggerGlyphPulse();
+    playClickSound(700);
+    setMonochrome(!state.monochrome);
   });
   els.lockMediaBtn.addEventListener("click", () => openApp("media"));
 
@@ -1107,6 +1511,11 @@ function bindEvents() {
   });
 
   document.addEventListener("keydown", (e) => {
+    if (state.isLocked && (e.key === " " || e.key === "Enter")) {
+      e.preventDefault();
+      setLocked(false);
+      return;
+    }
     if (e.key === "Escape") {
       if (els.changelogPopover && !els.changelogPopover.hidden) {
         setChangelogOpen(false);
@@ -1129,4 +1538,24 @@ hydrateStaticData();
 syncThemeUI();
 updateClocks();
 setInterval(updateClocks, 15000);
+
+try {
+  if (localStorage.getItem("chasingimpetus-mono") === "1") {
+    setMonochrome(true);
+  }
+} catch (_) {}
+
+renderGalleryFrame();
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+setGalleryPaused(prefersReducedMotion);
+
 bindEvents();
+
+// First-time visitors in a session land on the Lock Screen
+try {
+  if (!sessionStorage.getItem("chasingimpetus-unlocked")) {
+    setLocked(true, true);
+  }
+} catch (_) {
+  setLocked(true, true);
+}

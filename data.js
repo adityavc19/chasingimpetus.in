@@ -8,25 +8,26 @@ export const PORTFOLIO_DATA = {
   profile: {
     name: "Aditya",
     handle: "@ChasingImpetus",
-    osName: "Nothing OS · Chasing Impetus",
-    deviceModel: "Nothing OS · Portfolio Edition",
-    tagline: "Solo founder in Bangalore building small consumer apps about attention, habits, films, and the stuff we save.",
-    location: "Bangalore, India",
-    status: "Exploring neural hardware & AI-native services",
+    osName: "Chasing Impetus",
+    deviceModel: "Portfolio Edition",
+    tagline: "Product manager turned product builder, exploring AI-native services and consumer hardware.",
+    status: "Building Material Desk & exploring consumer hardware",
     bio: [
-      "I'm a product manager turned founder. I'm currently exploring neural hardware and AI-native services. I've been experimenting with a bunch of things: building consumer apps, new media experiences, and short films.",
+      "Product manager turned product builder, exploring AI-native services and consumer hardware.",
       "Previously worked on consumer products with 1M+ users at Flash AI and NoBroker, plus a brief stint at General Catalyst evaluating startups through an investor's lens."
     ],
     past: [
-      { name: "Flash AI", role: "Consumer Product (1M+ users)", url: "https://flash.co/home" },
-      { name: "NoBroker", role: "Consumer Product (1M+ users)", url: "https://www.nobroker.in/" },
-      { name: "General Catalyst", role: "Startup Evaluation / VC Stint", url: "https://www.generalcatalyst.com/" }
+      { name: "Flash AI", role: "Product Manager", url: "https://flash.co/home" },
+      { name: "NoBroker", role: "Associate Product Manager", url: "https://www.nobroker.in/" },
+      { name: "General Catalyst", role: "Analyst Intern", url: "https://www.generalcatalyst.com/" }
     ],
     now: [
-      { label: "EXPLORING", value: "Consumer hardware & neural wearables" },
-      { label: "BUILDING", value: "AI-native services & Curia" },
-      { label: "EXPERIMENTS", value: "New media experiences & short films" },
-      { label: "LOCATION", value: "Bangalore, India" }
+      { label: "BUILDING", value: "Material Desk — AI services for construction" },
+      { label: "EXPLORING", value: "Consumer hardware" }
+    ],
+    experiments: [
+      { label: "NEW MEDIA", value: "New media experiences & short films" },
+      { label: "CONSUMER APPS", value: "Small apps about attention, habits, and the stuff we save" }
     ],
     socials: [
       { label: "X / Twitter", handle: "@ChasingImpetus", url: "https://x.com/ChasingImpetus" },
@@ -229,6 +230,42 @@ export const PORTFOLIO_DATA = {
     }
   ],
 
+  // 3B. CURATED GALLERY — Auto-rotating image widget on the Home Screen (add your own favorite artworks/stills!)
+  gallery: [
+    {
+      src: "./assets/wanderer.jpg",
+      title: "Wanderer above the Sea of Fog",
+      credit: "Caspar David Friedrich · 1818",
+      position: "center 36%"
+    },
+    {
+      src: "./assets/media-still.jpg",
+      title: "Light & Concrete",
+      credit: "35mm Monochrome Study",
+      position: "center 48%"
+    },
+    {
+      src: "./assets/wallpaper-pixel.jpg",
+      title: "Twin Moons Over Dusk",
+      credit: "Pixel Cityscape",
+      position: "center 30%"
+    }
+  ],
+
+  // 3C. DRIFT — Infinite scroll cards (inspired by Reel Capture & Unplug)
+  driftFeed: [
+    { tag: "THOUGHT", title: "You opened a mysterious icon on a personal website.", body: "Most people click without knowing what's on the other side. That's basically how every feed works." },
+    { tag: "ATTENTION", title: "Average thumb travel per day: 90 meters.", body: "That's roughly the height of the Statue of Liberty—scrolled one flick at a time." },
+    { tag: "CINEMA", title: "Wong Kar-wai shot In the Mood for Love over 15 months without a finished script.", body: "Constraint and obsession beat over-planning almost every time." },
+    { tag: "HABITS", title: "Willpower loses to friction every single time.", body: "If silencing an app takes five taps in Settings, you won't do it. If it takes one tap on an NFC puck, you will." },
+    { tag: "SAVED LINKS", title: "How many tabs do you have open right now?", body: "Be honest. You're not going to read 80% of them—which is why Curia turns them into an audio debate." },
+    { tag: "ALGORITHM", title: "This card was generated solely to keep your thumb moving.", body: "Notice how easy it is to keep going even when you know there's no prize at the bottom?" },
+    { tag: "FILM", title: "The average shot length in modern action films dropped from 6 seconds to 2.4 seconds.", body: "Even cinema got rewired for shorter attention spans." },
+    { tag: "BUILDING", title: "Small consumer apps are the most honest creative medium.", body: "Ship something in a weekend. Either people send it to their group chat or they don't." },
+    { tag: "CHECKPOINT", title: "Still scrolling?", body: "Your odometer at the top is real. Reel Capture measures this exact distance on Android." },
+    { tag: "QUIET", title: "Monochrome screens drop phone pickups by ~30%.", body: "Try flipping the Monochrome toggle in the pull-down Control Center when you leave this feed." }
+  ],
+
   // 4. SHELF — Books & Movies (sample list ready for your personal favorites)
   shelf: {
     movies: [
@@ -293,16 +330,16 @@ export const PORTFOLIO_DATA = {
     ]
   },
 
-  // 5. MUSIC — Spotify "On Rotation" Embed (paste any Spotify playlist/album/track URL!)
+  // 5. MUSIC — Aditya's Spotify "On Rotation" Playlist
   music: {
     label: "ON ROTATION",
-    // Paste any regular open.spotify.com/playlist/... or /track/... URL here:
-    spotifyUrl: "https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn",
+    spotifyUrl: "https://open.spotify.com/playlist/6pC1LlCxbdEhLrBYXfDVFU?si=c3e3899144f14463",
+    embedUrl: "https://open.spotify.com/embed/playlist/6pC1LlCxbdEhLrBYXfDVFU?utm_source=generator&theme=0&si=c3e3899144f14463",
     playlists: [
       {
-        name: "01 // LATE NIGHT FOCUS",
-        vibe: "Lo-Fi Beats · Deep Work",
-        spotifyUrl: "https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn"
+        name: "01 // ON ROTATION",
+        vibe: "Aditya's Personal Playlist",
+        spotifyUrl: "https://open.spotify.com/playlist/6pC1LlCxbdEhLrBYXfDVFU?si=c3e3899144f14463"
       },
       {
         name: "02 // CINEMA SCORES",
