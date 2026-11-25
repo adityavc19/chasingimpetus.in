@@ -1,135 +1,421 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aditya</title>
-<meta name="description" content="Aditya — solo founder in Bangalore building small consumer apps about attention, habits, films, and the stuff we save.">
-<style>
-  body { margin: 0; background: #fff; color: #111; font: 20px/1.5 "Times New Roman", Times, Georgia, serif; }
-  a { color: #0000EE; }
-  a:hover { color: #CC0000; }
-  main { max-width: 640px; padding: 96px 120px; display: flex; flex-direction: column; gap: 28px; }
-  header { display: flex; flex-direction: column; gap: 4px; }
-  h1 { margin: 0; font-size: 40px; line-height: 1.15; }
-  mark { background: #FFF27A; color: #111; padding: 0 6px; }
-  h2 { margin: 0; font-size: 24px; }
-  p, dl, dd { margin: 0; }
-  hr { width: 100%; border: 0; border-top: 1px solid #111; margin: 8px 0; }
-  .mono { font-family: "Courier New", Courier, monospace; font-size: 15px; color: #555; }
-  dl { display: flex; flex-direction: column; gap: 18px; }
-  dl > div { display: flex; flex-direction: column; gap: 2px; }
-  dt { display: flex; align-items: baseline; gap: 12px; font-weight: 700; }
-  dt .tag { font-weight: 400; font-size: 14px; }
-  .building { color: #9A5B00; }
-  .live { color: #0A7A2F; }
-  .experiment { color: #555; }
-  .research { color: #6B3FA0; }
-  dd { color: #333; }
-  ul { margin: 0; padding-left: 22px; }
-  footer { margin-top: 24px; font-size: 14px; }
-  details > summary { cursor: pointer; list-style: none; display: flex; align-items: baseline; gap: 12px; }
-  details > summary::-webkit-details-marker { display: none; }
-  details > summary h2::before { content: "▸ "; }
-  details[open] > summary h2::before { content: "▾ "; }
-  details[open] .hint { display: none; }
-  .media { display: flex; flex-direction: column; gap: 28px; margin-top: 20px; }
-  figure { margin: 0; display: flex; flex-direction: column; gap: 6px; }
-  figure iframe { width: 100%; aspect-ratio: 16 / 9; border: 1px solid #111; background: #000; }
-  figure iframe.vertical { aspect-ratio: 9 / 16; max-width: 340px; }
-  figcaption { font-size: 15px; }
-  @media (max-width: 720px) {
-    body { font-size: 18px; }
-    main { padding: 48px 20px; }
-    h1 { font-size: 34px; }
-    figure iframe.vertical { max-width: 260px; }
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nothing OS — Personal Portfolio</title>
+  <meta name="description" content="A Nothing OS inspired personal portfolio in both Landscape Desktop and Portrait Phone modes with frosted-glass atmospheric wallpapers, modular widgets, notes, GitHub projects, media, books & films, and music.">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    try {
+      document.querySelector('meta[name="color-scheme"]').content =
+        localStorage.getItem("color-scheme") ?? "light dark";
+    } catch (_) {}
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css?v=4">
 </head>
 <body>
-<main>
-  <header>
-    <h1><mark>Aditya</mark></h1>
-    <div class="mono">Bangalore, India</div>
-  </header>
+  <div class="studio-stage" id="studio-stage" data-mode="desktop">
+    <!-- Subtle Architectural Desktop Sidebar (visible only in Portrait Phone mode on wide screens) -->
+    <aside class="desk-sidebar" aria-label="Device controls and telemetry">
+      <div class="desk-brand">
+        <span class="red-dot" aria-hidden="true"></span>
+        <span class="ndot-label">NOTHING (PORTFOLIO)</span>
+      </div>
+      <h1 class="desk-title" id="desk-owner-name">Aditya</h1>
+      <p class="desk-tagline" id="desk-owner-tagline">Builder, writer, and film &amp; music obsessive.</p>
 
-  <p>I'm a product manager turned founder.<br>
-  I'm currently exploring neural hardware and AI-native services.<br>
-  I've been experimenting with a bunch of things: building consumer apps, new media experiences, and short films.</p>
+      <div class="desk-controls">
+        <button type="button" class="desk-pill" id="desk-mode-btn">
+          <span class="mono-tag">01</span>
+          <span>Switch to Desktop Landscape</span>
+        </button>
+        <button type="button" class="desk-pill" id="desk-qs-btn">
+          <span class="mono-tag">02</span>
+          <span>Quick Settings &amp; Theme</span>
+        </button>
+        <button type="button" class="desk-pill" id="desk-lock-btn">
+          <span class="mono-tag">03</span>
+          <span>Lock / Wake Screen</span>
+        </button>
+        <button type="button" class="desk-pill" id="desk-wall-btn">
+          <span class="mono-tag">04</span>
+          <span>Cycle Frosted Wallpaper</span>
+        </button>
+      </div>
 
-  <h2>Past</h2>
-  <p>I've worked on consumer products with 1M+ users at <a href="https://flash.co/home">Flash AI</a> and <a href="https://www.nobroker.in/">NoBroker</a>. I've also done a brief stint at a VC firm, <a href="https://www.generalcatalyst.com/">General Catalyst</a>, evaluating startups through an investor's lens.</p>
+      <div class="desk-hints">
+        <p class="mono-caption">NOTHING OS 3.0 / 5.0</p>
+        <ul>
+          <li>Tap any modular widget or dock icon to open an app.</li>
+          <li>Click the status bar for Quick Settings, Theme &amp; Wallpapers.</li>
+          <li>Press <kbd>Esc</kbd> or tap the home bar to return Home.</li>
+        </ul>
+      </div>
+    </aside>
 
-  <hr>
+    <!-- Nothing OS Device Shell (morphs cleanly between Landscape Desktop & Portrait Phone) -->
+    <main class="phone-wrapper" aria-label="Nothing OS interactive portfolio">
+      <div class="glyph-aura" id="glyph-aura" aria-hidden="true"></div>
 
-  <h2>Projects</h2>
-  <dl>
-    <div>
-      <dt>Neuro Wearable <span class="mono tag research">[research]</span></dt>
-      <dd>A wearable that tracks and measures your attention and focus.</dd>
-    </div>
-    <div>
-      <dt><a href="https://curia.surge.sh/">Curia</a> <span class="mono tag building">[building]</span></dt>
-      <dd>Drop in the links you never got round to reading. Get back an audio show that argues about them.</dd>
-    </div>
-    <div>
-      <dt><a href="https://mobilewars.surge.sh/">Mobile Wars</a> <span class="mono tag experiment">[experiment]</span></dt>
-      <dd>You're the CEO of Microsoft the week the iPhone launches. Can you survive the platform shift?</dd>
-    </div>
-    <div>
-      <dt><a href="https://www.getunplug.in/">Unplug</a> <span class="mono tag live">[live]</span></dt>
-      <dd>Tap your phone on an NFC puck and the distracting apps go quiet until you tap again.</dd>
-    </div>
-    <div>
-      <dt><a href="https://filmspeedrun.surge.sh/">Film Speed Run</a> <span class="mono tag live">[live]</span></dt>
-      <dd>Race from one film to another through the people who made them.</dd>
-    </div>
-    <div>
-      <dt><a href="#">Reel Capture</a> <span class="mono tag live">[live]</span></dt>
-      <dd>An Android app that measures how far you actually scroll.</dd>
-    </div>
-    <div>
-      <dt><a href="#">Playable</a> <span class="mono tag experiment">[experiment]</span></dt>
-      <dd>Paste any link, get a quick game for your group chat: scenarios that split the room.</dd>
-    </div>
-  </dl>
+      <div class="phone-chassis">
+        <!-- Hardware Side Buttons (shown in Portrait Phone mode) -->
+        <button type="button" class="hw-btn hw-vol-up" aria-label="Volume up" title="Volume Up"></button>
+        <button type="button" class="hw-btn hw-vol-down" aria-label="Volume down" title="Volume Down"></button>
+        <button type="button" class="hw-btn hw-power" id="hw-power-btn" aria-label="Power button: toggle lock screen" title="Lock / Wake Screen"></button>
 
-  <hr>
+        <!-- Display Screen -->
+        <div class="phone-screen" id="phone-screen" data-wallpaper="pixel">
+          <!-- Atmospheric Frosted Glass + Fine Grain Wallpaper Layers -->
+          <div class="wallpaper-layer" aria-hidden="true">
+            <div class="wallpaper-orb"></div>
+            <div class="wallpaper-frost"></div>
+            <div class="wallpaper-grain"></div>
+          </div>
 
-  <details>
-    <summary><h2>AI media</h2> <span class="mono tag hint">[click to open]</span></summary>
-    <div class="media">
-      <figure>
-        <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">Nike x India <a href="https://t.co/TKi3nqzyUV">pic.twitter.com/TKi3nqzyUV</a></p>&mdash; aditya chauhan (@ChasingImpetus) <a href="https://x.com/ChasingImpetus/status/1957035243996643789">August 17, 2025</a></blockquote>
-      </figure>
-      <figure>
-        <iframe src="https://drive.google.com/file/d/1iKjg0u2Wj5Boh7oFKX9EAJfj-EG_Es7j/preview" title="Intro" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
-        <figcaption class="mono">Intro</figcaption>
-      </figure>
-      <figure>
-        <iframe class="vertical" src="https://drive.google.com/file/d/1HwAID8PvPS9HVp6drkK5l7MojlFVfdjg/preview" title="Amul ad" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
-        <figcaption class="mono">Amul ad</figcaption>
-      </figure>
-      <figure>
-        <iframe src="https://drive.google.com/file/d/1IyfGsk9weIemZioVqUvlr0lrLwTiiJRD/preview" title="Future of Commerce" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
-        <figcaption class="mono">Future of Commerce</figcaption>
-      </figure>
-    </div>
-  </details>
+          <!-- Punch-hole front camera (Portrait Phone mode) -->
+          <div class="punch-hole" aria-hidden="true"></div>
 
-  <hr>
+          <!-- Top Status Bar -->
+          <header class="status-bar">
+            <div class="status-bar-inner">
+              <div class="status-left">
+                <span class="status-time" id="status-time">10:25</span>
+                <span class="status-brand-desktop">
+                  <span class="red-dot" aria-hidden="true"></span>
+                  <span>NOTHING OS</span>
+                </span>
+              </div>
 
-  <h2>Right now</h2>
-  <ul>
-    <li>Exploring consumer hardware.</li>
-    <li>Building AI-native services.</li>
-  </ul>
+              <div class="status-actions-desktop">
+                <button type="button" class="status-chip" id="top-mode-toggle" aria-label="Toggle Desktop Landscape or Phone Portrait mode">
+                  <span id="top-mode-label">Phone View</span>
+                </button>
+                <button type="button" class="status-chip" id="top-wall-cycle" aria-label="Cycle frosted wallpaper">
+                  <span>Wallpaper</span>
+                </button>
+                <button type="button" class="status-chip" id="top-lock-btn" aria-label="Lock screen">
+                  <span>Lock</span>
+                </button>
+              </div>
 
-  <h2>Elsewhere</h2>
-  <p><a href="mailto:adityachauhan090@gmail.com">adityachauhan090@gmail.com</a> · <a href="https://x.com/ChasingImpetus">X</a> · <a href="https://www.linkedin.com/in/aditya-chauhan-27b298177/">LinkedIn</a> · <a href="https://github.com/adityavc19">GitHub</a></p>
+              <button type="button" class="status-bar-trigger" id="status-bar-trigger" aria-expanded="false" aria-controls="quick-settings" aria-label="Open Quick Settings">
+                <span class="status-right">
+                  <svg viewBox="0 0 16 12" width="13" height="10" fill="currentColor" aria-hidden="true"><path d="M8 9.6a1.4 1.4 0 1 1 0 2.8 1.4 1.4 0 0 1 0-2.8zm-3.5-2.1a5.2 5.2 0 0 1 7 0l-1.1 1.1a3.6 3.6 0 0 0-4.8 0L4.5 7.5zm-2.8-2.8a9 9 0 0 1 12.6 0l-1.1 1.1a7.4 7.4 0 0 0-10.4 0L1.7 4.7z"/></svg>
+                  <span class="status-signal" aria-hidden="true">
+                    <i></i><i></i><i></i><i></i>
+                  </span>
+                  <span class="status-battery-pill" aria-label="Battery 94 percent">
+                    <span class="battery-fill"></span>
+                  </span>
+                </span>
+              </button>
+            </div>
+          </header>
 
-  <footer class="mono">Last updated October 2026.</footer>
-</main>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+          <!-- Quick Settings Pull-Down Shade / Desktop Flyout -->
+          <section class="quick-settings" id="quick-settings" aria-label="Quick Settings" hidden>
+            <div class="qs-panel">
+              <div class="qs-header">
+                <div>
+                  <h2 class="serif-heading">Settings</h2>
+                  <p class="qs-date" id="qs-date">WED, NOV 25</p>
+                </div>
+                <button type="button" class="icon-circle-btn" id="qs-close-btn" aria-label="Close Quick Settings">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+              </div>
+
+              <div class="qs-tiles">
+                <button type="button" class="qs-tile" id="qs-sound-toggle" aria-pressed="true">
+                  <span class="qs-tile-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                  </span>
+                  <span class="qs-tile-label">UI Sound</span>
+                  <span class="qs-tile-state" id="qs-sound-state">ON</span>
+                </button>
+
+                <button type="button" class="qs-tile" id="qs-glyph-toggle" aria-pressed="true">
+                  <span class="qs-tile-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>
+                  </span>
+                  <span class="qs-tile-label">Glyphs</span>
+                  <span class="qs-tile-state" id="qs-glyph-state">ON</span>
+                </button>
+
+                <button type="button" class="qs-tile" id="qs-mode-action">
+                  <span class="qs-tile-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="18" x2="12" y2="21"/></svg>
+                  </span>
+                  <span class="qs-tile-label">Layout</span>
+                  <span class="qs-tile-state" id="qs-mode-state">DESKTOP</span>
+                </button>
+
+                <button type="button" class="qs-tile" id="qs-lock-action">
+                  <span class="qs-tile-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                  </span>
+                  <span class="qs-tile-label">Lock Screen</span>
+                  <span class="qs-tile-state">SLEEP</span>
+                </button>
+              </div>
+
+              <!-- Wallpaper Selector -->
+              <fieldset class="qs-theme-group">
+                <legend class="mono-caption">WALLPAPER</legend>
+                <div class="theme-segmented wall-grid-4" role="radiogroup" aria-label="Wallpaper atmosphere">
+                  <button type="button" class="wall-opt" data-wall="pixel" role="radio" aria-checked="true">Pixel</button>
+                  <button type="button" class="wall-opt" data-wall="sage" role="radio" aria-checked="false">Sage</button>
+                  <button type="button" class="wall-opt" data-wall="ice" role="radio" aria-checked="false">Ice</button>
+                  <button type="button" class="wall-opt" data-wall="obsidian" role="radio" aria-checked="false">Noir</button>
+                </div>
+              </fieldset>
+
+              <!-- 3-State Color Scheme Control (System / Light / Dark) -->
+              <fieldset class="qs-theme-group">
+                <legend class="mono-caption">DISPLAY THEME</legend>
+                <div class="theme-segmented" role="radiogroup" aria-label="Color scheme preference">
+                  <button type="button" class="theme-opt" data-theme="system" role="radio" aria-checked="true">System</button>
+                  <button type="button" class="theme-opt" data-theme="light" role="radio" aria-checked="false">Light</button>
+                  <button type="button" class="theme-opt" data-theme="dark" role="radio" aria-checked="false">Dark</button>
+                </div>
+                <p class="qs-theme-hint" id="qs-theme-hint">Following system preference</p>
+              </fieldset>
+            </div>
+          </section>
+
+          <!-- Lock Screen Overlay (Frosted Ice Orb + Wide Clock + Bottom Ring) -->
+          <section class="lock-screen" id="lock-screen" aria-label="Nothing OS Lock Screen" hidden>
+            <div class="lock-wallpaper" aria-hidden="true">
+              <div class="lock-orb"></div>
+              <div class="wallpaper-grain"></div>
+            </div>
+
+            <div class="lock-top">
+              <p class="lock-date" id="lock-date">Wed 25, Nov</p>
+              <div class="lock-clock" id="lock-clock">1025</div>
+              <div class="lock-widget-pill">
+                <span class="red-dot" aria-hidden="true"></span>
+                <span id="lock-status-text">Available for interesting builds</span>
+              </div>
+            </div>
+
+            <div class="lock-bottom">
+              <button type="button" class="lock-corner-btn" id="lock-glyph-btn" aria-label="Pulse flashlight glyph">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6c0 2-2 2-2 4v10a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V10c0-2-2-2-2-4V2h12v4z"/><line x1="6" y1="6" x2="18" y2="6"/></svg>
+              </button>
+
+              <button type="button" class="fingerprint-ring" id="unlock-btn" aria-label="Unlock Nothing OS">
+                <span class="sr-only">Tap to unlock</span>
+              </button>
+
+              <button type="button" class="lock-corner-btn" id="lock-media-btn" aria-label="Quick open Media app">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              </button>
+            </div>
+          </section>
+
+          <!-- Main OS Viewport -->
+          <div class="os-viewport" id="os-viewport">
+            <!-- HOME SCREEN — Morphs seamlessly between Portrait Phone Bento & Landscape Desktop 3-Column Bento -->
+            <section class="home-screen" id="home-screen" aria-label="Home Screen">
+              <h2 class="sr-only" id="home-heading" tabindex="-1">Nothing OS Home Screen</h2>
+
+              <div class="bento-canvas">
+                <!-- MODULE A: Spotify "On Rotation" Widget + Notes Icon Button -->
+                <div class="bento-row-top">
+                  <div class="n-widget widget-spotify" aria-label="Spotify On Rotation widget">
+                    <div class="spotify-widget-head">
+                      <span class="spotify-head-left">
+                        <span class="red-dot" aria-hidden="true"></span>
+                        <span class="mono-caption" id="spotify-widget-label">ON ROTATION</span>
+                      </span>
+                      <a class="spotify-open-link" id="spotify-open-link" href="https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn" target="_blank" rel="noopener noreferrer">OPEN ↗</a>
+                    </div>
+                    <iframe
+                      id="spotify-home-embed"
+                      class="spotify-embed-frame"
+                      title="Spotify On Rotation Player"
+                      src="https://open.spotify.com/embed/playlist/37i9dQZF1DWWQRwui0ExPn?utm_source=generator&theme=0"
+                      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                      loading="lazy"
+                    ></iframe>
+                  </div>
+
+                  <div class="notes-icon-row">
+                    <button type="button" class="n-icon-tile app-launcher" data-app="notes" aria-label="Open Notes and blog essays">
+                      <span class="n-icon-circle">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                          <polyline points="14 2 14 8 20 8"/>
+                          <line x1="8" y1="13" x2="16" y2="13"/>
+                          <line x1="8" y1="17" x2="13" y2="17"/>
+                        </svg>
+                        <span class="n-icon-badge" id="badge-notes" aria-hidden="true">3</span>
+                      </span>
+                      <span class="n-icon-label">Notes</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- MODULE B: Full-Width Wanderer Artwork / Media Card -->
+                <button type="button" class="n-widget widget-photo-banner app-launcher" data-app="media" aria-label="Open Media videos and reels">
+                  <img src="./assets/wanderer.jpg" alt="Wanderer above the Sea of Fog by Caspar David Friedrich" class="photo-banner-img">
+                  <div class="photo-banner-overlay">
+                    <span class="frosted-tag">MEDIA · VISUAL ARCHIVE</span>
+                    <span class="photo-play-pill" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><polygon points="7,5 19,12 7,19"/></svg>
+                    </span>
+                  </div>
+                </button>
+
+                <!-- MODULE C: Serif Shelf + Red/Dark Circles + Dot-Matrix Calendar/Clock -->
+                <div class="bento-row-bottom">
+                  <div class="bento-left-col">
+                    <button type="button" class="n-widget widget-serif-card app-launcher" data-app="shelf" aria-label="Open Shelf for films and books">
+                      <span class="serif-card-main">Shelf</span>
+                      <span class="serif-card-sub">FILMS &amp; BOOKS</span>
+                    </button>
+
+                    <div class="circle-pair">
+                      <button type="button" class="n-circle-btn red app-launcher" data-app="github" aria-label="Open GitHub projects" title="GitHub Projects">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                        </svg>
+                      </button>
+
+                      <button type="button" class="n-circle-btn dark app-launcher" data-app="about" aria-label="Open Bio and Profile" title="Bio & Profile">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <rect x="3" y="4" width="18" height="16" rx="3"/>
+                          <circle cx="9" cy="10.5" r="2"/>
+                          <path d="M6.2 16a3 3 0 0 1 5.6 0"/>
+                          <line x1="14" y1="9.5" x2="18" y2="9.5"/>
+                          <line x1="14" y1="13.5" x2="17" y2="13.5"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <button type="button" class="n-widget widget-dot-card app-launcher" data-app="about" aria-label="Date and status widget. Open About.">
+                    <div class="dot-card-lines">
+                      <span id="widget-weekday">WEDNESDAY</span>
+                      <span id="widget-date-short">25 NOV</span>
+                      <span id="widget-clock" class="dot-card-time">10:25</span>
+                    </div>
+                    <div class="dot-card-foot">
+                      <span class="dot-sun" aria-hidden="true">☀</span>
+                      <span id="widget-owner">ADITYA</span>
+                    </div>
+                  </button>
+                </div>
+
+                <!-- DESKTOP-ONLY EXTRA MODULE: Pinned Essay Preview Card (fills out the landscape composition cleanly) -->
+                <button type="button" class="n-widget widget-desktop-note app-launcher" data-app="notes" aria-label="Pinned essay preview. Open Notes.">
+                  <div class="desktop-note-head">
+                    <span class="mono-caption">PINNED ESSAY</span>
+                    <span class="tag-pill red" id="desktop-note-date">NOV 18</span>
+                  </div>
+                  <h3 class="desktop-note-title" id="desktop-note-title">Why Monochrome Interfaces Calm the Mind</h3>
+                  <p class="desktop-note-excerpt" id="desktop-note-excerpt">Stripping away rainbow notification badges turns a device back into a deliberate tool.</p>
+                </button>
+              </div>
+
+              <!-- Subtle Page Indicator Dots -->
+              <div class="page-dots" aria-hidden="true">
+                <span class="active"></span>
+                <span></span>
+              </div>
+
+              <!-- Bottom Circular Monochrome Nothing Dock (4 icons in Phone, all 6 icons in Desktop Landscape) -->
+              <nav class="nothing-dock" aria-label="Quick app dock">
+                <button type="button" class="dock-icon app-launcher" data-app="notes" aria-label="Notes" title="Notes">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="8" y1="13" x2="16" y2="13"/>
+                    <line x1="8" y1="17" x2="13" y2="17"/>
+                  </svg>
+                  <span class="dock-tooltip">Notes</span>
+                </button>
+
+                <button type="button" class="dock-icon app-launcher" data-app="github" aria-label="GitHub" title="GitHub">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="16 18 22 12 16 6"/>
+                    <polyline points="8 6 2 12 8 18"/>
+                  </svg>
+                  <span class="dock-tooltip">GitHub</span>
+                </button>
+
+                <button type="button" class="dock-icon dock-desktop-only app-launcher" data-app="media" aria-label="Media" title="Media">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="2" y="4" width="20" height="16" rx="3"/>
+                    <polygon points="10 9 16 12 10 15 10 9" fill="currentColor" stroke="none"/>
+                  </svg>
+                  <span class="dock-tooltip">Media</span>
+                </button>
+
+                <button type="button" class="dock-icon app-launcher" data-app="shelf" aria-label="Shelf" title="Shelf">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                  </svg>
+                  <span class="dock-tooltip">Shelf</span>
+                </button>
+
+                <button type="button" class="dock-icon app-launcher" data-app="music" aria-label="Music" title="Music">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"/>
+                    <circle cx="12" cy="12" r="2.5"/>
+                  </svg>
+                  <span class="dock-tooltip">Music</span>
+                </button>
+
+                <button type="button" class="dock-icon dock-desktop-only app-launcher" data-app="about" aria-label="Bio & Profile" title="Bio">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="4" width="18" height="16" rx="3"/>
+                    <circle cx="9" cy="10.5" r="2"/>
+                    <path d="M6.2 16a3 3 0 0 1 5.6 0"/>
+                    <line x1="14" y1="9.5" x2="18" y2="9.5"/>
+                    <line x1="14" y1="13.5" x2="17" y2="13.5"/>
+                  </svg>
+                  <span class="dock-tooltip">Bio</span>
+                </button>
+              </nav>
+            </section>
+
+            <!-- ACTIVE APP VIEW (Full screen in Phone, Wide Frosted Window in Landscape Desktop) -->
+            <section class="app-view" id="app-view" aria-label="Application view" hidden>
+              <div class="app-window">
+                <div class="app-header">
+                  <button type="button" class="back-btn" id="app-back-btn" aria-label="Back to Home Screen">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+                  </button>
+                  <div class="app-title-group">
+                    <h2 class="app-title" id="app-view-title" tabindex="-1">Notes</h2>
+                    <span class="mono-micro" id="app-view-subtitle">BLOGS &amp; ESSAYS</span>
+                  </div>
+                  <span class="app-header-dot" aria-hidden="true"></span>
+                </div>
+
+                <div class="app-body" id="app-view-body">
+                  <!-- Populated dynamically by app.js -->
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Bottom Home Gesture Indicator Bar -->
+          <footer class="gesture-bar-wrap">
+            <button type="button" class="gesture-bar" id="home-gesture-btn" aria-label="Return to Home Screen" title="Home"></button>
+          </footer>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="./app.js?v=4"></script>
 </body>
 </html>
