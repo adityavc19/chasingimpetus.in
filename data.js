@@ -29,13 +29,15 @@ export const PORTFOLIO_DATA = {
       { label: "LOCATION", value: "Bangalore, India" }
     ],
     socials: [
-      { label: "GitHub", handle: "github.com/adityavc19", url: "https://github.com/adityavc19" },
       { label: "X / Twitter", handle: "@ChasingImpetus", url: "https://x.com/ChasingImpetus" },
       { label: "LinkedIn", handle: "aditya-chauhan", url: "https://www.linkedin.com/in/aditya-chauhan-27b298177/" },
-      { label: "Email", handle: "adityachauhan090@gmail.com", url: "mailto:adityachauhan090@gmail.com" }
+      { label: "GitHub", handle: "github.com/adityavc19", url: "https://github.com/adityavc19" },
+      { label: "Email", handle: "adityachauhan090@gmail.com", url: "mailto:adityachauhan090@gmail.com" },
+      { label: "Letterboxd", handle: "letterboxd.com", url: "https://letterboxd.com/" }
     ],
     changelog: [
-      { hash: "c19f4a", date: "Nov 2026", text: "Migrated chasingimpetus.in content into Nothing OS portfolio" },
+      { hash: "e41b09", date: "Nov 25, 2026", text: "Added top bar controls, changelog, and internal vs external dock icons" },
+      { hash: "297cef", date: "Nov 25, 2026", text: "Deployed portfolio live to chasingimpetus.in with pixel wallpaper & Spotify" },
       { hash: "8a21e0", date: "Oct 2026", text: "Added Neuro Wearable research & Curia audio show build" },
       { hash: "4d90b2", date: "Sep 2026", text: "Shipped Unplug NFC puck & Film Speed Run" }
     ]

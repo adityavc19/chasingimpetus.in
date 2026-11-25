@@ -46,9 +46,9 @@
   --scroll-track-dark: #141617;
   --scroll-thumb-dark: #4f5459;
 
-  /* Signature Nothing Red & Yellow Status Accent */
-  --nothing-red: #d71921;
-  --nothing-red-soft: rgba(215, 25, 33, 0.18);
+  /* Calm Neutral Accent (no distracting red dots or red text) */
+  --nothing-red: light-dark(#18181b, #f4f5f6);
+  --nothing-red-soft: light-dark(rgba(24, 24, 27, 0.08), rgba(244, 245, 246, 0.14));
   --nothing-yellow: #f4c430;
 
   /* Resolved Tokens (Fallback defaults to Light) */
@@ -200,16 +200,163 @@ a {
 }
 
 /* ============================================================================
+   OUTER TOP WEBSITE HEADER BAR (always visible outside phone/tablet frame)
+   ============================================================================ */
+
+.site-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  height: 42px;
+  width: 100%;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--app-sheet);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.78rem;
+}
+
+.site-brand-btn {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.86rem;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  padding: 4px 2px;
+}
+
+.site-topbar-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar-icon-btn,
+.topbar-text-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 7px;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  font-weight: 500;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.topbar-icon-btn {
+  width: 28px;
+  padding: 0;
+  justify-content: center;
+}
+
+.topbar-icon-btn:hover,
+.topbar-text-btn:hover,
+.topbar-text-btn[aria-expanded="true"] {
+  background: var(--border);
+  color: var(--text);
+}
+
+.topbar-clock {
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  padding-left: 4px;
+}
+
+/* Sun / Moon icon branching per dark-mode-toggle guidance */
+.theme-icon-sun { display: none; }
+.theme-icon-moon { display: block; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not(:has(> head > meta[name="color-scheme"][content="light"])) .theme-icon-sun { display: block; }
+  :root:not(:has(> head > meta[name="color-scheme"][content="light"])) .theme-icon-moon { display: none; }
+}
+
+:root:has(> head > meta[name="color-scheme"][content="dark"]) .theme-icon-sun { display: block; }
+:root:has(> head > meta[name="color-scheme"][content="dark"]) .theme-icon-moon { display: none; }
+:root:has(> head > meta[name="color-scheme"][content="light"]) .theme-icon-sun { display: none; }
+:root:has(> head > meta[name="color-scheme"][content="light"]) .theme-icon-moon { display: block; }
+
+/* Changelog Dropdown */
+.changelog-wrap {
+  position: relative;
+}
+
+.changelog-popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 310px;
+  max-width: calc(100vw - 24px);
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--app-sheet);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 20px 48px -14px rgba(0, 0, 0, 0.45);
+  z-index: 80;
+}
+
+.changelog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.changelog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.changelog-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-bottom: 9px;
+  border-bottom: 1px dashed var(--border);
+}
+
+.changelog-entry:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.changelog-entry-title {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.changelog-entry-meta {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  color: var(--text-muted);
+}
+
+/* ============================================================================
    STUDIO STAGE & DESKTOP SIDEBAR
    ============================================================================ */
 
 .studio-stage {
-  min-height: 100dvh;
+  min-height: calc(100dvh - 42px);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: clamp(2rem, 6vw, 5.5rem);
-  padding: 1.5rem;
+  padding: 1.25rem;
 }
 
 .desk-sidebar {
@@ -375,8 +522,8 @@ a {
 
 .hw-vol-up { left: -4px; top: 132px; height: 44px; }
 .hw-vol-down { left: -4px; top: 188px; height: 44px; }
-.hw-power { right: -4px; top: 164px; height: 62px; background: var(--nothing-red); }
-.hw-power:hover { background: #ef232b; }
+.hw-power { right: -4px; top: 164px; height: 62px; background: #52565e; }
+.hw-power:hover { background: #717680; }
 
 /* ============================================================================
    PHONE DISPLAY + FROSTED-GLASS ATMOSPHERIC WALLPAPER + FINE GRAIN
@@ -727,8 +874,8 @@ a {
 
 .theme-opt[aria-checked="true"],
 .wall-opt[aria-checked="true"] {
-  background: var(--nothing-red);
-  color: #ffffff;
+  background: var(--text);
+  color: var(--screen-bg);
   font-weight: 700;
 }
 
@@ -1050,27 +1197,82 @@ a {
   transition: background-color 0.16s ease, color 0.16s ease;
 }
 
-.n-icon-tile:hover .n-icon-circle {
-  background: var(--nothing-red);
-  color: #ffffff;
+/* ============================================================================
+   INTERNAL (COLORED) VS EXTERNAL (MONOCHROME) ICON SYSTEM
+   Colored = opens inside this site · Monochrome = redirects externally
+   ============================================================================ */
+
+.app-tone-notes {
+  background: linear-gradient(145deg, #f3c669, #d99b38) !important;
+  color: #1a1408 !important;
+}
+
+.app-tone-projects {
+  background: linear-gradient(145deg, #6b8afd, #4663d9) !important;
+  color: #ffffff !important;
+}
+
+.app-tone-media {
+  background: linear-gradient(145deg, #e2786a, #bf5347) !important;
+  color: #ffffff !important;
+}
+
+.app-tone-shelf {
+  background: linear-gradient(145deg, #5eb89a, #3a8f74) !important;
+  color: #091d16 !important;
+}
+
+.app-tone-bio {
+  background: linear-gradient(145deg, #9d8bf4, #7462d4) !important;
+  color: #ffffff !important;
 }
 
 .n-icon-badge {
   position: absolute;
-  top: -1px;
-  right: -1px;
+  top: -2px;
+  right: -2px;
   min-width: 20px;
   height: 20px;
   padding: 0 5px;
   border-radius: 999px;
-  background: var(--nothing-red);
-  color: #ffffff;
+  background: #141517;
+  color: #f4f5f6;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
   font-family: var(--font-mono);
-  font-size: 0.64rem;
+  font-size: 0.62rem;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.n-icon-tile:hover .n-icon-circle {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.dock-divider {
+  width: 1px;
+  height: 26px;
+  background: var(--border-strong);
+  margin: 0 2px;
+}
+
+.dock-icon.dock-external {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text-muted);
+}
+
+.dock-icon.dock-external:hover {
+  background: var(--widget-bg);
+  color: var(--text);
+  border-color: var(--text);
+}
+
+.dock-icon:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
 }
 
 .n-icon-label {
@@ -1918,7 +2120,7 @@ a {
 
 .studio-stage[data-mode="desktop"] .phone-wrapper {
   width: min(1220px, calc(100vw - 36px));
-  height: min(760px, calc(100dvh - 36px));
+  height: min(720px, calc(100dvh - 76px));
 }
 
 .studio-stage[data-mode="desktop"] .glyph-aura {
@@ -2197,6 +2399,8 @@ a {
 @media (max-width: 860px) {
   .studio-stage { padding: 0.75rem; }
   .desk-sidebar { display: none; }
+  .topbar-clock,
+  .topbar-mode-btn { display: none; }
 }
 
 @media (max-width: 440px) {

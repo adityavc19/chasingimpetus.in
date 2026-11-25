@@ -1,4 +1,4 @@
-import { PORTFOLIO_DATA } from "./data.js?v=3";
+import { PORTFOLIO_DATA } from "./data.js?v=5";
 
 // ============================================================================
 // STATE
@@ -29,6 +29,15 @@ const state = {
 
 const els = {
   colorMeta: document.querySelector('meta[name="color-scheme"]'),
+  siteBrandBtn: document.getElementById("site-brand-btn"),
+  topbarThemeBtn: document.getElementById("topbar-theme-btn"),
+  topbarSoundBtn: document.getElementById("topbar-sound-btn"),
+  topbarChangelogBtn: document.getElementById("topbar-changelog-btn"),
+  changelogPopover: document.getElementById("changelog-popover"),
+  changelogList: document.getElementById("changelog-list"),
+  topbarModeBtn: document.getElementById("topbar-mode-btn"),
+  topbarModeLabel: document.getElementById("topbar-mode-label"),
+  topbarClock: document.getElementById("topbar-clock"),
   studioStage: document.getElementById("studio-stage"),
   phoneScreen: document.getElementById("phone-screen"),
   deskName: document.getElementById("desk-owner-name"),
@@ -269,6 +278,15 @@ function setThemePreference(choice) {
   syncThemeUI();
 }
 
+function toggleTwoStateTheme() {
+  const stored = getStoredScheme();
+  const systemScheme = systemDarkQuery.matches ? "dark" : "light";
+  const rendered = stored ?? systemScheme;
+  const target = rendered === "dark" ? "light" : "dark";
+  // Per dark-mode-toggle guidance: store if diverging from system, else remove to return to system
+  setThemePreference(target === systemScheme ? "system" : target);
+}
+
 systemDarkQuery.addEventListener("change", syncThemeUI);
 
 window.addEventListener("storage", (e) => {
@@ -299,6 +317,12 @@ function updateClocks() {
   els.widgetDateShort.textContent = `${dayNum} ${monthShort.toUpperCase()}`;
   els.qsDate.textContent = `${weekdayShort.toUpperCase()}, ${monthShort.toUpperCase()} ${dayNum}`;
   els.lockDate.textContent = `${weekdayShort} ${dayNum}, ${monthShort}`;
+
+  if (els.topbarClock) {
+    const h12 = now.getHours() % 12 || 12;
+    const ampm = now.getHours() >= 12 ? "PM" : "AM";
+    els.topbarClock.textContent = `${weekdayShort} ${monthShort} ${dayNum}  ${h12}:${mins} ${ampm}`;
+  }
 }
 
 function hydrateStaticData() {
@@ -316,6 +340,19 @@ function hydrateStaticData() {
     els.desktopNoteExcerpt.textContent = pinned.excerpt;
   }
 
+  if (els.changelogList && profile.changelog?.length) {
+    els.changelogList.innerHTML = profile.changelog
+      .map(
+        (c) => `
+      <div class="changelog-entry">
+        <span class="changelog-entry-title">${esc(c.text)}</span>
+        <span class="changelog-entry-meta">${esc(c.hash)} · ${esc(c.date)}</span>
+      </div>
+    `
+      )
+      .join("");
+  }
+
   updateMusicWidgetUI();
 }
 
@@ -327,8 +364,8 @@ function setLayoutMode(mode) {
   const resolved = mode === "phone" || window.innerWidth < 900 ? "phone" : "desktop";
   state.layoutMode = resolved;
   els.studioStage.dataset.mode = resolved;
-  if (els.topModeLabel) {
-    els.topModeLabel.textContent = resolved === "desktop" ? "Phone View" : "Desktop View";
+  if (els.topbarModeLabel) {
+    els.topbarModeLabel.textContent = resolved === "desktop" ? "Phone" : "Desktop";
   }
   if (els.qsModeState) {
     els.qsModeState.textContent = resolved === "desktop" ? "DESKTOP" : "PHONE";
@@ -430,8 +467,8 @@ function setLocked(locked) {
 
 const APP_META = {
   notes: { title: "Notes", subtitle: "BLOGS & ESSAYS" },
-  github: { title: "GitHub", subtitle: "REPOSITORIES & BUILDS" },
-  media: { title: "Media", subtitle: "VIDEO ESSAYS & 35MM REELS" },
+  github: { title: "Projects", subtitle: "BUILDS & EXPERIMENTS" },
+  media: { title: "Media", subtitle: "VIDEO ESSAYS & VISUALS" },
   shelf: { title: "Shelf", subtitle: "FILMS & BOOKS LOG" },
   music: { title: "Music", subtitle: "ON ROTATION" },
   about: { title: "Aditya", subtitle: "BANGALORE, INDIA" }
@@ -857,7 +894,8 @@ const SOCIAL_ICONS = {
   GitHub: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>`,
   "X / Twitter": `<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
   LinkedIn: `<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>`,
-  Email: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>`
+  Email: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>`,
+  Letterboxd: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="7" cy="12" r="3.4"/><circle cx="12" cy="12" r="3.4"/><circle cx="17" cy="12" r="3.4"/></svg>`
 };
 
 function renderAboutApp() {
@@ -931,16 +969,64 @@ function renderAboutApp() {
 // EVENT LISTENERS
 // ============================================================================
 
+function toggleSoundState() {
+  state.soundEnabled = !state.soundEnabled;
+  els.qsSoundToggle?.setAttribute("aria-pressed", String(state.soundEnabled));
+  if (els.qsSoundState) {
+    els.qsSoundState.textContent = state.soundEnabled ? "ON" : "MUTE";
+  }
+  if (els.topbarSoundBtn) {
+    els.topbarSoundBtn.setAttribute("aria-pressed", String(state.soundEnabled));
+    els.topbarSoundBtn.setAttribute("aria-label", state.soundEnabled ? "Mute interface sounds" : "Unmute interface sounds");
+    const onIcon = els.topbarSoundBtn.querySelector(".sound-icon-on");
+    const offIcon = els.topbarSoundBtn.querySelector(".sound-icon-off");
+    if (state.soundEnabled) {
+      onIcon?.removeAttribute("hidden");
+      offIcon?.setAttribute("hidden", "");
+    } else {
+      onIcon?.setAttribute("hidden", "");
+      offIcon?.removeAttribute("hidden");
+    }
+  }
+  if (state.soundEnabled) playClickSound(760);
+}
+
+function setChangelogOpen(open) {
+  if (!els.changelogPopover || !els.topbarChangelogBtn) return;
+  els.changelogPopover.hidden = !open;
+  els.topbarChangelogBtn.setAttribute("aria-expanded", String(open));
+}
+
 function bindEvents() {
+  // Outer Top Bar Controls
+  els.siteBrandBtn?.addEventListener("click", () => {
+    setChangelogOpen(false);
+    goHome();
+  });
+  els.topbarThemeBtn?.addEventListener("click", toggleTwoStateTheme);
+  els.topbarSoundBtn?.addEventListener("click", toggleSoundState);
+  els.topbarModeBtn?.addEventListener("click", toggleLayoutMode);
+  els.topbarChangelogBtn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    playClickSound(680);
+    setChangelogOpen(els.changelogPopover.hidden);
+  });
+
+  document.addEventListener("click", (e) => {
+    if (
+      els.changelogPopover &&
+      !els.changelogPopover.hidden &&
+      !els.changelogPopover.contains(e.target) &&
+      !els.topbarChangelogBtn?.contains(e.target)
+    ) {
+      setChangelogOpen(false);
+    }
+  });
+
   els.statusBarTrigger.addEventListener("click", () => setQuickSettings(!state.qsOpen));
   els.qsCloseBtn.addEventListener("click", () => setQuickSettings(false));
 
-  els.qsSoundToggle.addEventListener("click", () => {
-    state.soundEnabled = !state.soundEnabled;
-    els.qsSoundToggle.setAttribute("aria-pressed", String(state.soundEnabled));
-    els.qsSoundState.textContent = state.soundEnabled ? "ON" : "MUTE";
-    if (state.soundEnabled) playClickSound(760);
-  });
+  els.qsSoundToggle.addEventListener("click", toggleSoundState);
 
   els.qsGlyphToggle.addEventListener("click", () => {
     state.glyphEnabled = !state.glyphEnabled;
@@ -1022,7 +1108,9 @@ function bindEvents() {
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
-      if (state.qsOpen) {
+      if (els.changelogPopover && !els.changelogPopover.hidden) {
+        setChangelogOpen(false);
+      } else if (state.qsOpen) {
         setQuickSettings(false);
       } else if (state.activeApp) {
         goHome();
