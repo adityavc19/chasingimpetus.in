@@ -2256,7 +2256,7 @@ a {
 }
 
 .studio-stage[data-mode="desktop"] .spotify-embed-frame {
-  height: 352px;
+  height: 152px;
 }
 
 .studio-stage[data-mode="phone"] .spotify-embed-frame {
