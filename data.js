@@ -10,31 +10,22 @@ export const PORTFOLIO_DATA = {
     handle: "@ChasingImpetus",
     osName: "Chasing Impetus",
     deviceModel: "Portfolio Edition",
-    tagline: "Product manager turned product builder, exploring AI-native services and consumer hardware.",
-    status: "Building Material Desk & exploring consumer hardware",
+    tagline: "Product manager turned product builder, experimenting with AI.",
+    status: "Building Material Desk",
     bio: [
-      "Product manager turned product builder, exploring AI-native services and consumer hardware.",
-      "Previously worked on consumer products with 1M+ users at Flash AI and NoBroker, plus a brief stint at General Catalyst evaluating startups through an investor's lens."
+      "Product manager turned product builder, experimenting with AI. Previously worked as a PM at Flash AI and NoBroker, with a short internship at General Catalyst. IIT Guwahati, batch of 2022."
     ],
-    past: [
-      { name: "Flash AI", role: "Product Manager", url: "https://flash.co/home" },
-      { name: "NoBroker", role: "Associate Product Manager", url: "https://www.nobroker.in/" },
-      { name: "General Catalyst", role: "Analyst Intern", url: "https://www.generalcatalyst.com/" }
-    ],
+    past: [],
     now: [
-      { label: "BUILDING", value: "Material Desk — AI services for construction" },
-      { label: "EXPLORING", value: "Consumer hardware" }
+      { label: "BUILDING", value: "Material Desk — AI services for construction", url: "https://materialdesk.surge.sh/" }
     ],
-    experiments: [
-      { label: "NEW MEDIA", value: "New media experiences & short films" },
-      { label: "CONSUMER APPS", value: "Small apps about attention, habits, and the stuff we save" }
-    ],
+    experiments: [],
     socials: [
       { label: "X / Twitter", handle: "@ChasingImpetus", url: "https://x.com/ChasingImpetus" },
       { label: "LinkedIn", handle: "aditya-chauhan", url: "https://www.linkedin.com/in/aditya-chauhan-27b298177/" },
       { label: "GitHub", handle: "github.com/adityavc19", url: "https://github.com/adityavc19" },
       { label: "Email", handle: "adityachauhan090@gmail.com", url: "mailto:adityachauhan090@gmail.com" },
-      { label: "Letterboxd", handle: "letterboxd.com", url: "https://letterboxd.com/" }
+      { label: "Letterboxd", handle: "AdityaChauhan", url: "https://letterboxd.com/AdityaChauhan/" }
     ],
     changelog: [
       { hash: "e41b09", date: "Nov 25, 2026", text: "Added top bar controls, changelog, and internal vs external dock icons" },
@@ -89,83 +80,55 @@ export const PORTFOLIO_DATA = {
     }
   ],
 
-  // 2. GITHUB / PROJECTS — All 7 real projects from chasingimpetus.in
+  // 2. PROJECTS — 6 active builds & experiments
   projects: [
     {
-      id: "neuro-wearable",
-      name: "Neuro Wearable",
-      description: "A wearable that tracks and measures your attention and focus.",
-      language: "Hardware",
-      status: "RESEARCH",
+      id: "material-desk",
+      name: "Material Desk",
+      description: "AI-native services and workflows built for construction teams.",
+      category: "AI · Construction",
       year: "2026",
-      tags: ["Neural", "Attention", "Hardware"],
-      repoUrl: "https://github.com/adityavc19",
-      liveUrl: ""
+      liveUrl: "https://materialdesk.surge.sh/",
+      featured: true
     },
     {
       id: "curia",
       name: "Curia",
       description: "Drop in the links you never got round to reading. Get back an audio show that argues about them.",
-      language: "AI Native",
-      status: "BUILDING",
+      category: "AI Audio",
       year: "2026",
-      tags: ["Audio", "AI", "Reading"],
-      repoUrl: "https://github.com/adityavc19",
       liveUrl: "https://curia.surge.sh/"
-    },
-    {
-      id: "unplug",
-      name: "Unplug",
-      description: "Tap your phone on an NFC puck and the distracting apps go quiet until you tap again.",
-      language: "Hardware + App",
-      status: "LIVE",
-      year: "2026",
-      tags: ["NFC", "Focus", "Habits"],
-      repoUrl: "https://github.com/adityavc19",
-      liveUrl: "https://www.getunplug.in/"
     },
     {
       id: "film-speed-run",
       name: "Film Speed Run",
       description: "Race from one film to another through the people who made them.",
-      language: "Web Game",
-      status: "LIVE",
+      category: "Web Game",
       year: "2026",
-      tags: ["Cinema", "Game"],
-      repoUrl: "https://github.com/adityavc19",
       liveUrl: "https://filmspeedrun.surge.sh/"
     },
     {
       id: "mobile-wars",
       name: "Mobile Wars",
       description: "You're the CEO of Microsoft the week the iPhone launches. Can you survive the platform shift?",
-      language: "Interactive",
-      status: "EXPERIMENT",
+      category: "Interactive",
       year: "2026",
-      tags: ["Strategy", "Simulation"],
-      repoUrl: "https://github.com/adityavc19",
       liveUrl: "https://mobilewars.surge.sh/"
     },
     {
       id: "reel-capture",
       name: "Reel Capture",
       description: "An Android app that measures how far you actually scroll.",
-      language: "Android",
-      status: "LIVE",
+      category: "Android",
       year: "2026",
-      tags: ["Android", "Attention", "Quantified"],
-      repoUrl: "https://github.com/adityavc19",
       liveUrl: ""
     },
     {
       id: "playable",
       name: "Playable",
       description: "Paste any link, get a quick game for your group chat: scenarios that split the room.",
-      language: "Web App",
-      status: "EXPERIMENT",
+      category: "Web App",
       year: "2026",
-      tags: ["Social", "AI", "Games"],
-      repoUrl: "https://github.com/adityavc19",
       liveUrl: ""
     }
   ],
@@ -230,25 +193,32 @@ export const PORTFOLIO_DATA = {
     }
   ],
 
-  // 3B. CURATED GALLERY — Auto-rotating image widget on the Home Screen (add your own favorite artworks/stills!)
+  // 3B. CURATED GALLERY — Auto-rotating image widget on the Home Screen
   gallery: [
     {
       src: "./assets/wanderer.jpg",
+      srcDesktop: "./assets/wanderer-wide.jpg",
       title: "Wanderer above the Sea of Fog",
       credit: "Caspar David Friedrich · 1818",
-      position: "center 36%"
+      position: "center 34%"
     },
     {
-      src: "./assets/media-still.jpg",
-      title: "Light & Concrete",
-      credit: "35mm Monochrome Study",
+      src: "./assets/gallery-voyage.jpg",
+      title: "The Strait of Magellan",
+      credit: "Gordon Frickers",
+      position: "center 45%"
+    },
+    {
+      src: "./assets/gallery-muybridge.webp",
+      title: "The Horse in Motion",
+      credit: "Eadweard Muybridge · 1878",
       position: "center 48%"
     },
     {
-      src: "./assets/wallpaper-pixel.jpg",
-      title: "Twin Moons Over Dusk",
-      credit: "Pixel Cityscape",
-      position: "center 30%"
+      src: "./assets/gallery-jatayu.jpg",
+      title: "Jatayu Vadha",
+      credit: "Raja Ravi Varma · c. 1895",
+      position: "center 28%"
     }
   ],
 
@@ -266,8 +236,11 @@ export const PORTFOLIO_DATA = {
     { tag: "QUIET", title: "Monochrome screens drop phone pickups by ~30%.", body: "Try flipping the Monochrome toggle in the pull-down Control Center when you leave this feed." }
   ],
 
-  // 4. SHELF — Books & Movies (sample list ready for your personal favorites)
+  // 4. SHELF — Books & Movies (live Letterboxd Diary + Goodreads RSS shelf!)
   shelf: {
+    letterboxdUsername: "AdityaChauhan",
+    goodreadsUserId: "68133394",
+    goodreadsShelf: "read", // "read" | "currently-reading" | "to-read"
     movies: [
       {
         title: "In the Mood for Love",

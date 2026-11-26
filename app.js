@@ -1,4 +1,4 @@
-import { PORTFOLIO_DATA } from "./data.js?v=9";
+import { PORTFOLIO_DATA } from "./data.js?v=22";
 
 // ============================================================================
 // STATE
@@ -20,6 +20,7 @@ const state = {
   brightness: 100,
   galleryIndex: 0,
   galleryPaused: false,
+  homePage: 0,
   isLocked: false,
   qsOpen: false,
   wallpaper: "pixel",
@@ -81,13 +82,16 @@ const els = {
   lockDate: document.getElementById("lock-date"),
   lockClock: document.getElementById("lock-clock"),
   lockStatusText: document.getElementById("lock-status-text"),
-  lockNotifNote: document.getElementById("lock-notif-note"),
+  lockArtImg: document.getElementById("lock-art-img"),
   lockGlyphBtn: document.getElementById("lock-glyph-btn"),
   lockMediaBtn: document.getElementById("lock-media-btn"),
   unlockBtn: document.getElementById("unlock-btn"),
 
   homeScreen: document.getElementById("home-screen"),
   homeHeading: document.getElementById("home-heading"),
+  pagesViewport: document.getElementById("pages-viewport"),
+  pagesTrack: document.getElementById("pages-track"),
+  pageDots: document.querySelectorAll(".page-dot[data-goto-page]"),
   spotifyWidgetLabel: document.getElementById("spotify-widget-label"),
   spotifyOpenLink: document.getElementById("spotify-open-link"),
   spotifyHomeEmbed: document.getElementById("spotify-home-embed"),
@@ -97,10 +101,11 @@ const els = {
   galleryPauseBtn: document.getElementById("gallery-pause-btn"),
   galleryNextBtn: document.getElementById("gallery-next-btn"),
   badgeNotes: document.getElementById("badge-notes"),
-  widgetWeekday: document.getElementById("widget-weekday"),
-  widgetDateShort: document.getElementById("widget-date-short"),
-  widgetClock: document.getElementById("widget-clock"),
-  widgetOwner: document.getElementById("widget-owner"),
+  clockHour: document.getElementById("clock-hour"),
+  clockMin: document.getElementById("clock-min"),
+  clockSec: document.getElementById("clock-sec"),
+  widgetDateMeta: document.getElementById("widget-date-meta"),
+  widgetDayNum: document.getElementById("widget-day-num"),
   desktopNoteDate: document.getElementById("desktop-note-date"),
   desktopNoteTitle: document.getElementById("desktop-note-title"),
   desktopNoteExcerpt: document.getElementById("desktop-note-excerpt"),
@@ -248,11 +253,17 @@ function renderGalleryFrame() {
   const items = PORTFOLIO_DATA.gallery;
   if (!items?.length || !els.galleryImg) return;
   const item = items[state.galleryIndex % items.length];
-  els.galleryImg.src = item.src;
+  const imgSrc = state.layoutMode === "desktop" && item.srcDesktop ? item.srcDesktop : item.src;
+  els.galleryImg.src = imgSrc;
   els.galleryImg.alt = item.title;
   els.galleryImg.style.objectPosition = item.position || "center 40%";
   if (els.galleryTitle) els.galleryTitle.textContent = item.title;
   if (els.galleryCredit) els.galleryCredit.textContent = item.credit;
+  if (els.lockArtImg) {
+    els.lockArtImg.src = item.src;
+    els.lockArtImg.alt = item.title;
+    els.lockArtImg.style.objectPosition = item.position || "center 34%";
+  }
 }
 
 function stepGallery() {
@@ -378,22 +389,33 @@ window.addEventListener("storage", (e) => {
 
 function updateClocks() {
   const now = new Date();
-  const hours = String(now.getHours()).padStart(2, "0");
-  const mins = String(now.getMinutes()).padStart(2, "0");
+  const hoursNum = now.getHours();
+  const minsNum = now.getMinutes();
+  const secsNum = now.getSeconds();
+  const hours = String(hoursNum).padStart(2, "0");
+  const mins = String(minsNum).padStart(2, "0");
   const timeStr = `${hours}:${mins}`;
 
   const weekdayShort = now.toLocaleDateString("en-US", { weekday: "short" });
-  const weekdayLong = now.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase();
   const monthShort = now.toLocaleDateString("en-US", { month: "short" });
   const dayNum = String(now.getDate()).padStart(2, "0");
 
   els.statusTime.textContent = timeStr;
-  els.widgetClock.textContent = timeStr;
   els.lockClock.textContent = timeStr;
-  els.widgetWeekday.textContent = weekdayLong;
-  els.widgetDateShort.textContent = `${dayNum} ${monthShort.toUpperCase()}`;
+  if (els.widgetDateMeta) els.widgetDateMeta.textContent = `${weekdayShort.toUpperCase()} · ${monthShort.toUpperCase()}`;
+  if (els.widgetDayNum) els.widgetDayNum.textContent = String(now.getDate());
   els.qsDate.textContent = `${weekdayShort.toUpperCase()}, ${monthShort.toUpperCase()} ${dayNum}`;
   els.lockDate.textContent = `${weekdayShort} ${dayNum}, ${monthShort}`;
+
+  // Update live Analog Clock SVG hands
+  if (els.clockHour && els.clockMin && els.clockSec) {
+    const hourDeg = ((hoursNum % 12) + minsNum / 60) * 30;
+    const minDeg = (minsNum + secsNum / 60) * 6;
+    const secDeg = secsNum * 6;
+    els.clockHour.setAttribute("transform", `rotate(${hourDeg} 50 50)`);
+    els.clockMin.setAttribute("transform", `rotate(${minDeg} 50 50)`);
+    els.clockSec.setAttribute("transform", `rotate(${secDeg} 50 50)`);
+  }
 
   if (els.topbarClock) {
     const h12 = now.getHours() % 12 || 12;
@@ -406,7 +428,6 @@ function hydrateStaticData() {
   const { profile, notes } = PORTFOLIO_DATA;
   els.deskName.textContent = profile.name;
   els.deskTagline.textContent = profile.tagline;
-  els.widgetOwner.textContent = profile.name.toUpperCase();
   els.lockStatusText.textContent = profile.tagline;
   els.badgeNotes.textContent = String(notes.length);
 
@@ -450,6 +471,7 @@ function setLayoutMode(mode) {
   if (els.qsModeState) {
     els.qsModeState.textContent = resolved === "desktop" ? "DESKTOP" : "PHONE";
   }
+  renderGalleryFrame();
 }
 
 function toggleLayoutMode() {
@@ -510,6 +532,20 @@ function selectPlaylist(index) {
   if (state.activeApp === "music") {
     renderMusicApp();
   }
+}
+
+function setHomePage(pageIndex, silent = false) {
+  const clamped = pageIndex === 1 ? 1 : 0;
+  state.homePage = clamped;
+  if (els.pagesTrack) {
+    els.pagesTrack.dataset.page = String(clamped);
+  }
+  els.pageDots.forEach((dot) => {
+    const isActive = Number(dot.dataset.gotoPage) === clamped;
+    dot.classList.toggle("active", isActive);
+    dot.setAttribute("aria-selected", String(isActive));
+  });
+  if (!silent) playClickSound(640);
 }
 
 // ============================================================================
@@ -775,116 +811,138 @@ function renderNotesApp() {
 }
 
 // ============================================================================
-// MINI-APP 2: GITHUB (Projects & Repositories)
+// MINI-APP 2: PROJECTS (Nothing OS 5.0 Editorial Bento Showcase)
 // ============================================================================
 
 function renderGithubApp() {
   const { projects } = PORTFOLIO_DATA;
-  const statuses = ["All", "LIVE", "BUILDING", "RESEARCH", "EXPERIMENT"];
-  const filtered =
-    state.githubFilter === "All"
-      ? projects
-      : projects.filter((p) => p.status === state.githubFilter);
 
   els.appViewBody.innerHTML = `
-    <div class="chip-row" role="group" aria-label="Filter projects by status">
-      ${statuses
-        .map(
-          (st) => `
-        <button type="button" class="chip" data-gh-filter="${esc(st)}" aria-pressed="${String(state.githubFilter === st)}">${esc(st)}</button>
-      `
-        )
+    <div class="projects-showcase">
+      ${projects
+        .map((repo, idx) => {
+          const num = String(idx + 1).padStart(2, "0");
+          const isFeatured = Boolean(repo.featured);
+          const hasLink = Boolean(repo.liveUrl);
+          const tag = hasLink ? "a" : "article";
+          const linkAttrs = hasLink
+            ? `href="${esc(repo.liveUrl)}" target="_blank" rel="noopener noreferrer"`
+            : "";
+
+          return `
+        <${tag} class="proj-card ${isFeatured ? "proj-featured" : ""}" ${linkAttrs}>
+          <div class="proj-card-top">
+            <span class="proj-index">${num}</span>
+            <span class="proj-cat">${esc(repo.category.toUpperCase())}</span>
+          </div>
+          <div class="proj-card-main">
+            <h3 class="proj-title">${esc(repo.name)}</h3>
+            <p class="proj-desc">${esc(repo.description)}</p>
+          </div>
+          <div class="proj-card-foot">
+            <span class="proj-host">${hasLink ? esc(repo.liveUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")) : esc(repo.year)}</span>
+            ${
+              hasLink
+                ? `<span class="proj-arrow-circle" aria-hidden="true">↗</span>`
+                : `<span class="proj-dot-mark" aria-hidden="true"></span>`
+            }
+          </div>
+        </${tag}>
+      `;
+        })
         .join("")}
     </div>
-    <div class="cards-grid-2">
-      ${filtered
-        .map(
-          (repo) => `
-        <article class="n-card">
-          <div class="n-card-meta">
-            <span>${esc(repo.language)}${repo.stars ? ` · ★ ${repo.stars}` : ` · ${esc(repo.year)}`}</span>
-            <span class="tag-pill ${repo.status === "LIVE" || repo.status === "BUILDING" ? "red" : ""}">${esc(repo.status)}</span>
-          </div>
-          <h3 class="n-card-title">${esc(repo.name)}</h3>
-          <p class="n-card-desc">${esc(repo.description)}</p>
-          <div class="chip-row">
-            ${repo.tags.map((t) => `<span class="tag-pill">${esc(t)}</span>`).join("")}
-          </div>
-          <div class="n-card-meta" style="margin-top: 4px;">
-            ${repo.liveUrl ? `<a class="link-btn" href="${esc(repo.liveUrl)}" target="_blank" rel="noopener noreferrer">OPEN LIVE ↗</a>` : `<span>${esc(repo.status)}</span>`}
-            <a class="link-btn" href="${esc(repo.repoUrl)}" target="_blank" rel="noopener noreferrer">GITHUB ↗</a>
-          </div>
-        </article>
-      `
-        )
-        .join("")}
+    <div class="projects-footer-bar">
+      <span class="mono-micro">MORE CODE &amp; EXPERIMENTS</span>
+      <a class="proj-gh-link" href="https://github.com/adityavc19" target="_blank" rel="noopener noreferrer">github.com/adityavc19 ↗</a>
     </div>
   `;
-
-  els.appViewBody.querySelectorAll("[data-gh-filter]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      playClickSound(640);
-      state.githubFilter = btn.dataset.ghFilter;
-      renderGithubApp();
-    });
-  });
 }
 
 // ============================================================================
-// MINI-APP 3: MEDIA (Video Essays & 35mm Reels)
+// MINI-APP 3: MEDIA (In-Place Playable Video Archive with Real Thumbnails)
 // ============================================================================
+
+function getDriveThumbUrl(embedUrl) {
+  const match = embedUrl?.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+  return match ? `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1000` : "";
+}
 
 function renderMediaApp() {
   const { media } = PORTFOLIO_DATA;
 
   els.appViewBody.innerHTML = `<div class="cards-grid-2">${media
     .map((item) => {
-      const isExpanded = state.activeMediaId === item.id;
+      const isPlayingHere = state.activeMediaId === item.id;
+      const thumbUrl = getDriveThumbUrl(item.embedUrl);
+      const isVertical = item.aspect === "9/16";
+
+      let stageMarkup = "";
+      if (item.embedUrl && isPlayingHere) {
+        stageMarkup = `
+          <div class="media-stage ${isVertical ? "vertical" : ""}">
+            <iframe
+              src="${esc(item.embedUrl)}"
+              title="${esc(item.title)}"
+              allow="autoplay; fullscreen"
+              allowfullscreen
+              class="media-stage-iframe"
+            ></iframe>
+          </div>
+        `;
+      } else if (item.embedUrl) {
+        stageMarkup = `
+          <button type="button" class="media-stage media-stage-poster ${isVertical ? "vertical" : ""}" data-play-media="${esc(item.id)}" aria-label="Play ${esc(item.title)}">
+            ${thumbUrl ? `<img src="${esc(thumbUrl)}" alt="${esc(item.title)} preview" class="media-poster-img" loading="lazy">` : ""}
+            <span class="media-poster-scrim" aria-hidden="true"></span>
+            <span class="media-play-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><polygon points="8,5 20,12 8,19"/></svg>
+            </span>
+            <span class="media-stage-pill">${esc(item.category.toUpperCase())} · ${esc(item.resolution)}</span>
+          </button>
+        `;
+      } else {
+        stageMarkup = `
+          <a class="media-stage media-stage-poster media-stage-link" href="${esc(item.externalUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(item.title)} on X">
+            <span class="media-x-mark" aria-hidden="true">𝕏</span>
+            <span class="media-stage-pill">OPEN ON X ↗</span>
+          </a>
+        `;
+      }
+
       return `
-      <article class="n-card">
-        <button type="button" class="media-thumb ${esc(item.accentPattern)}" data-toggle-media="${esc(item.id)}" aria-expanded="${String(isExpanded)}" aria-label="Preview ${esc(item.title)}">
-          <div class="n-card-meta" style="width: 100%; color: rgba(244,245,246,0.82);">
-            <span>${esc(item.category.toUpperCase())}</span>
-            <span>${esc(item.duration)}</span>
-          </div>
-          <span class="media-play-badge" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="7,5 19,12 7,19"/></svg>
-          </span>
-          <div class="n-card-meta" style="width: 100%; color: rgba(244,245,246,0.72);">
-            <span>${esc(item.resolution)}</span>
-            <span>${isExpanded ? "CLOSE PLAYER" : item.embedUrl ? "TAP TO PLAY" : "TAP FOR LINK"}</span>
-          </div>
-        </button>
-        <h3 class="n-card-title">${esc(item.title)}</h3>
-        <p class="n-card-desc">${esc(item.summary)}</p>
-        ${
-          isExpanded
-            ? `
-          <div style="border-top: 1px dashed var(--border-strong); padding-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+      <article class="n-card media-card">
+        ${stageMarkup}
+        <div class="media-card-info">
+          <div class="n-card-meta">
+            <h3 class="n-card-title">${esc(item.title)}</h3>
             ${
-              item.embedUrl
-                ? `<iframe src="${esc(item.embedUrl)}" title="${esc(item.title)}" allow="autoplay" allowfullscreen style="width: 100%; ${item.aspect === "9/16" ? "height: 360px;" : "aspect-ratio: 16 / 9;"} border: 0; border-radius: 12px; background: #000;"></iframe>`
-                : ""
-            }
-            ${
-              item.externalUrl
-                ? `<a class="link-btn" href="${esc(item.externalUrl)}" target="_blank" rel="noopener noreferrer">OPEN ORIGINAL ↗</a>`
-                : ""
+              item.embedUrl && isPlayingHere
+                ? `<button type="button" class="link-btn" data-stop-media="${esc(item.id)}">CLOSE</button>`
+                : item.externalUrl
+                  ? `<a class="link-btn" href="${esc(item.externalUrl)}" target="_blank" rel="noopener noreferrer">OPEN ↗</a>`
+                  : ""
             }
           </div>
-        `
-            : ""
-        }
+          <p class="n-card-desc">${esc(item.summary)}</p>
+        </div>
       </article>
     `;
     })
     .join("")}</div>`;
 
-  els.appViewBody.querySelectorAll("[data-toggle-media]").forEach((btn) => {
+  els.appViewBody.querySelectorAll("[data-play-media]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      playClickSound(700);
-      const id = btn.dataset.toggleMedia;
-      state.activeMediaId = state.activeMediaId === id ? null : id;
+      playClickSound(720);
+      state.activeMediaId = btn.dataset.playMedia;
+      renderMediaApp();
+    });
+  });
+
+  els.appViewBody.querySelectorAll("[data-stop-media]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      playClickSound(560);
+      state.activeMediaId = null;
       renderMediaApp();
     });
   });
@@ -904,25 +962,56 @@ function renderDotRating(score) {
 }
 
 function renderShelfApp() {
-  const items = PORTFOLIO_DATA.shelf[state.shelfTab];
+  const { shelf } = PORTFOLIO_DATA;
+  const lbUser = shelf.letterboxdUsername?.trim();
+  const grId = shelf.goodreadsUserId?.trim();
+  const grShelf = shelf.goodreadsShelf || "read";
+  const items = shelf[state.shelfTab];
 
-  els.appViewBody.innerHTML = `
-    <div class="chip-row" role="tablist" aria-label="Shelf categories">
-      <button type="button" class="chip" role="tab" aria-selected="${String(state.shelfTab === "movies")}" aria-pressed="${String(state.shelfTab === "movies")}" data-shelf-tab="movies">
-        FILMS (${PORTFOLIO_DATA.shelf.movies.length})
-      </button>
-      <button type="button" class="chip" role="tab" aria-selected="${String(state.shelfTab === "books")}" aria-pressed="${String(state.shelfTab === "books")}" data-shelf-tab="books">
-        BOOKS (${PORTFOLIO_DATA.shelf.books.length})
-      </button>
-    </div>
-    <div class="cards-grid-2">
+  const filmsContent = lbUser
+    ? `
+      <div class="n-card lb-diary-card">
+        <div class="n-card-meta">
+          <span>LETTERBOXD DIARY · @${esc(lbUser)}</span>
+          <a class="link-btn" href="https://letterboxd.com/${encodeURIComponent(lbUser)}/" target="_blank" rel="noopener noreferrer">LETTERBOXD ↗</a>
+        </div>
+        <div id="letterboxd-embed-wrapper-tc" class="lb-embed-host">
+          <p class="mono-micro" style="padding: 18px 0;">Loading recent films from Letterboxd…</p>
+        </div>
+      </div>
+    `
+    : `
+      <div class="n-card lb-diary-card">
+        <div class="n-card-meta">
+          <span>LETTERBOXD DIARY EMBED</span>
+          <span class="mono-micro">READY FOR USERNAME</span>
+        </div>
+        <div id="letterboxd-embed-wrapper-tc" class="lb-embed-host">
+          <p class="mono-micro" style="padding: 14px 0;">Loading Letterboxd diary preview…</p>
+        </div>
+      </div>
+    `;
+
+  const booksContent = grId
+    ? `
+      <div class="n-card lb-diary-card">
+        <div class="n-card-meta">
+          <span>GOODREADS · ${esc(grShelf.toUpperCase())}</span>
+          <a class="link-btn" href="https://www.goodreads.com/user/show/${encodeURIComponent(grId)}" target="_blank" rel="noopener noreferrer">GOODREADS ↗</a>
+        </div>
+        <div id="goodreads-embed-host" class="gr-embed-host">
+          <p class="mono-micro" style="padding: 18px 0;">Loading books from Goodreads…</p>
+        </div>
+      </div>
+    `
+    : `<div class="cards-grid-2">
       ${items
         .map(
           (entry) => `
         <article class="n-card">
           <div class="n-card-meta">
             <span>${esc(entry.creator)} · ${esc(entry.year)}</span>
-            <span class="tag-pill ${entry.status === "FAVORITE" || entry.status === "READING" ? "red" : ""}">${esc(entry.status)}</span>
+            <span class="tag-pill">${esc(entry.status)}</span>
           </div>
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
             <h3 class="n-card-title">${esc(entry.title)}</h3>
@@ -933,8 +1022,94 @@ function renderShelfApp() {
       `
         )
         .join("")}
+    </div>`;
+
+  els.appViewBody.innerHTML = `
+    <div class="chip-row" role="tablist" aria-label="Shelf categories">
+      <button type="button" class="chip" role="tab" aria-selected="${String(state.shelfTab === "movies")}" aria-pressed="${String(state.shelfTab === "movies")}" data-shelf-tab="movies">
+        FILMS
+      </button>
+      <button type="button" class="chip" role="tab" aria-selected="${String(state.shelfTab === "books")}" aria-pressed="${String(state.shelfTab === "books")}" data-shelf-tab="books">
+        BOOKS
+      </button>
     </div>
+    ${state.shelfTab === "movies" ? filmsContent : booksContent}
   `;
+
+  if (state.shelfTab === "movies") {
+    const host = document.getElementById("letterboxd-embed-wrapper-tc");
+    const endpoint = lbUser
+      ? `https://lb-embed-content.bokonon.dev?username=${encodeURIComponent(lbUser)}`
+      : `https://lb-embed-content.bokonon.dev?username=test&test=true`;
+
+    fetch(endpoint)
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.text();
+      })
+      .then((html) => {
+        if (host && state.activeApp === "shelf" && state.shelfTab === "movies") {
+          host.innerHTML = html;
+          host.querySelectorAll('a[href*="timcieplowski.com"]').forEach((link) => {
+            const parent = link.closest("p, div, small, span");
+            if (parent && parent !== host && parent.textContent.trim().toLowerCase().startsWith("via")) {
+              parent.remove();
+            } else {
+              link.remove();
+            }
+          });
+        }
+      })
+      .catch(() => {
+        if (host && state.activeApp === "shelf" && state.shelfTab === "movies") {
+          host.innerHTML = `<div class="cards-grid-2">${shelf.movies
+            .map(
+              (entry) => `
+            <article class="n-card">
+              <div class="n-card-meta">
+                <span>${esc(entry.creator)} · ${esc(entry.year)}</span>
+                <span class="tag-pill">${esc(entry.status)}</span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <h3 class="n-card-title">${esc(entry.title)}</h3>
+                ${renderDotRating(entry.rating)}
+              </div>
+              <p class="n-card-desc">${esc(entry.note)}</p>
+            </article>
+          `
+            )
+            .join("")}</div>`;
+        }
+      });
+  } else if (state.shelfTab === "books" && grId) {
+    const host = document.getElementById("goodreads-embed-host");
+    if (host) {
+      const widgetSrc = `https://www.goodreads.com/review/custom_widget/${encodeURIComponent(grId)}.Aditya's%20bookshelf:%20${encodeURIComponent(grShelf)}?cover_position=left&cover_size=medium&num_books=12&order=d&shelf=${encodeURIComponent(grShelf)}&show_author=1&show_cover=1&show_rating=1&show_review=0&show_tags=0&show_title=1&sort=date_read&widget_bg_transparent=true`;
+      const isDark =
+        els.colorMeta.content === "dark" ||
+        (els.colorMeta.content !== "light" && systemDarkQuery.matches);
+      const bg = isDark ? "#18191b" : "#ffffff";
+      const fg = isDark ? "#f4f5f6" : "#111214";
+      const muted = isDark ? "#9aa0a6" : "#5a5d64";
+      const cardBg = isDark ? "#222428" : "#f2f3f5";
+      const srcdoc = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="color-scheme" content="${isDark ? "dark" : "light"}"><style>
+        *{box-sizing:border-box}
+        html,body{margin:0;padding:4px 0;font-family:Inter,-apple-system,sans-serif;color:${fg};background:${bg}}
+        .gr_custom_container_${grId},[class*="gr_custom_container"]{border:none!important;background:transparent!important;padding:0!important;width:100%!important;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+        [class*="gr_custom_header"],[class*="gr_custom_container"] > center,center{display:none!important}
+        [class*="gr_custom_each_container"]{border:none!important;margin:0!important;padding:12px!important;border-radius:14px;background:${cardBg}!important;display:grid!important;grid-template-columns:54px minmax(0,1fr);grid-template-rows:auto auto 1fr;column-gap:12px;row-gap:3px;align-items:start;clear:none!important}
+        [class*="gr_custom_book_container"]{grid-column:1;grid-row:1 / span 3;float:none!important;width:54px!important;height:auto!important;margin:0!important}
+        [class*="gr_custom_book_container"] img{width:54px!important;height:80px!important;object-fit:cover;border-radius:7px;display:block}
+        [class*="gr_custom_title"]{grid-column:2;grid-row:1;font-size:13px;font-weight:600;line-height:1.3;margin:0;color:${fg}!important}
+        [class*="gr_custom_title"] a{color:${fg}!important;text-decoration:none}
+        [class*="gr_custom_title"] a:hover{text-decoration:underline}
+        [class*="gr_custom_author"]{grid-column:2;grid-row:2;font-size:11.5px;line-height:1.3;color:${muted}!important}
+        [class*="gr_custom_author"] a{color:${muted}!important;text-decoration:none}
+        [class*="gr_custom_rating"]{grid-column:2;grid-row:3;margin-top:4px;float:none!important;display:flex;align-items:center}
+      </style></head><body><script src="${widgetSrc}"></script></body></html>`;
+      host.innerHTML = `<iframe title="Goodreads Bookshelf" style="width:100%;height:380px;border:0;border-radius:12px;background:${bg};" srcdoc="${esc(srcdoc)}"></iframe>`;
+    }
+  }
 
   els.appViewBody.querySelectorAll("[data-shelf-tab]").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -1020,8 +1195,15 @@ function renderAboutApp() {
     <p class="mono-caption">RIGHT NOW</p>
     <div class="now-grid">
       ${profile.now
-        .map(
-          (row) => `
+        .map((row) =>
+          row.url
+            ? `
+        <a class="n-card interactive" href="${esc(row.url)}" target="_blank" rel="noopener noreferrer" style="padding: 11px 14px;">
+          <span class="mono-micro" style="color: var(--text-muted);">${esc(row.label)}</span>
+          <span style="font-size: 0.88rem; font-weight: 500; color: var(--text);">${esc(row.value)} ↗</span>
+        </a>
+      `
+            : `
         <div class="now-item">
           <span class="mono-micro" style="color: var(--text-muted);">${esc(row.label)}</span>
           <span style="font-size: 0.84rem; font-weight: 500;">${esc(row.value)}</span>
@@ -1495,6 +1677,54 @@ function bindEvents() {
     }
   });
 
+  // 2-Page Home Screen: Dot clicks + Horizontal Swipe/Drag
+  els.pageDots.forEach((dot) => {
+    dot.addEventListener("click", () => setHomePage(Number(dot.dataset.gotoPage)));
+  });
+
+  let pageSwipeStartX = null;
+  let pageSwipeStartY = null;
+  let pageSwipeDeltaX = 0;
+
+  els.pagesViewport?.addEventListener("pointerdown", (e) => {
+    if (e.target.closest("iframe, a")) return;
+    pageSwipeStartX = e.clientX;
+    pageSwipeStartY = e.clientY;
+    pageSwipeDeltaX = 0;
+  });
+
+  window.addEventListener("pointermove", (e) => {
+    if (pageSwipeStartX === null) return;
+    const dx = e.clientX - pageSwipeStartX;
+    const dy = e.clientY - pageSwipeStartY;
+    if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy)) {
+      pageSwipeDeltaX = dx;
+      if (els.pagesTrack) {
+        els.pagesTrack.classList.add("dragging");
+        const base = state.homePage === 1 ? -50 : 0;
+        const pct = (dx / Math.max(els.pagesViewport.clientWidth, 300)) * 40;
+        els.pagesTrack.style.transform = `translateX(calc(${base}% + ${pct.toFixed(2)}%))`;
+      }
+    }
+  });
+
+  window.addEventListener("pointerup", () => {
+    if (pageSwipeStartX === null) return;
+    const dx = pageSwipeDeltaX;
+    pageSwipeStartX = null;
+    pageSwipeStartY = null;
+    pageSwipeDeltaX = 0;
+    if (els.pagesTrack) {
+      els.pagesTrack.classList.remove("dragging");
+      els.pagesTrack.style.transform = "";
+    }
+    if (dx < -48 && state.homePage === 0) {
+      setHomePage(1);
+    } else if (dx > 48 && state.homePage === 1) {
+      setHomePage(0);
+    }
+  });
+
   // Modular Widget & Dock App Launchers
   document.querySelectorAll(".app-launcher[data-app]").forEach((el) => {
     el.addEventListener("click", () => openApp(el.dataset.app, el));
@@ -1515,6 +1745,16 @@ function bindEvents() {
       e.preventDefault();
       setLocked(false);
       return;
+    }
+    if (!state.isLocked && !state.qsOpen && !state.activeApp) {
+      if (e.key === "ArrowRight" && state.homePage === 0) {
+        setHomePage(1);
+        return;
+      }
+      if (e.key === "ArrowLeft" && state.homePage === 1) {
+        setHomePage(0);
+        return;
+      }
     }
     if (e.key === "Escape") {
       if (els.changelogPopover && !els.changelogPopover.hidden) {
@@ -1537,7 +1777,7 @@ setLayoutMode(window.innerWidth >= 900 ? "desktop" : "phone");
 hydrateStaticData();
 syncThemeUI();
 updateClocks();
-setInterval(updateClocks, 15000);
+setInterval(updateClocks, 1000);
 
 try {
   if (localStorage.getItem("chasingimpetus-mono") === "1") {
