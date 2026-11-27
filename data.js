@@ -35,47 +35,22 @@ export const PORTFOLIO_DATA = {
     ]
   },
 
-  // 1. NOTES — Starter essays aligned with your work (replace/add your own blogs anytime)
+  // 1. MUSINGS — Featured Substack essay sneak peek
   notes: [
     {
-      id: "attention-as-hardware",
-      title: "Designing for Attention in an Age of Infinite Scroll",
-      date: "Oct 2026",
+      id: "chasing-impetus",
+      title: "Chasing Impetus",
+      subtitle: "Why this newsletter?",
+      date: "Nov 2026",
       readTime: "3 min",
-      tag: "Attention",
+      tag: "Substack",
       pinned: true,
-      excerpt: "Why physical friction—like tapping an NFC puck or measuring focus directly—beats willpower.",
+      url: "https://adityachauhan.substack.com/p/chasing-impetus",
+      excerpt: "This blog is a personal exploration journey to reach my goal, which is not some external achievement but a personal challenge I've been facing all this while.",
       body: [
-        "Most software tries to solve distraction with more software: another screen-time chart, another notification telling you to ignore notifications.",
-        "Building Unplug and Reel Capture made one thing obvious—physical friction changes behavior immediately. When silencing distracting apps takes a deliberate tap on an NFC puck, your phone stops feeling like a slot machine.",
-        "That same curiosity is what pulled me toward neural hardware: what happens when we can measure real attention and focus directly instead of guessing from screen-on minutes?"
-      ]
-    },
-    {
-      id: "saved-links-to-audio",
-      title: "What Happens to All the Links We Save?",
-      date: "Oct 2026",
-      readTime: "3 min",
-      tag: "AI Native",
-      pinned: false,
-      excerpt: "Turning forgotten reading lists into live audio debates with Curia.",
-      body: [
-        "Everyone has a graveyard of bookmarks, open tabs, and 'read later' links they genuinely meant to get through.",
-        "Curia started from a simple question: instead of another folder to organize links, what if dropping them in gave you back an audio show that actually argues about the ideas inside them?",
-        "AI-native consumer products work best when they transform the format of something you already care about—turning passive backlogs into something you actually want to experience."
-      ]
-    },
-    {
-      id: "small-consumer-experiments",
-      title: "Shipping Small Consumer Experiments",
-      date: "Sep 2026",
-      readTime: "2 min",
-      tag: "Building",
-      pinned: false,
-      excerpt: "Notes from building Mobile Wars, Film Speed Run, and Playable.",
-      body: [
-        "Playful constraints force clarity. Whether it's surviving the week the iPhone launched in Mobile Wars, racing between films in Film Speed Run, or turning a link into a group-chat game in Playable, a tight premise teaches you more in a week than a 40-page spec.",
-        "Ship fast, see what people actually share with friends, and follow the momentum."
+        "This blog is a personal exploration journey to reach my goal, which is not some external achievement but a personal challenge I've been facing all this while.",
+        "Most of the time, it feels like running on autopilot—or homeostasis. Chasing Impetus is my way of making a conscious effort not to stay on autopilot, bringing that unbalanced force to move from inertia.",
+        "It's everything that seems interesting to me: personal reflections, culture, tech, philosophy, and experimenting with different content formats beyond essays."
       ]
     }
   ],

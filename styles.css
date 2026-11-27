@@ -3059,12 +3059,12 @@ a {
   min-height: 0;
 }
 
-/* PAGE 1 — Desktop Landscape Balanced 3-Col Zero-Scroll Grid (Image TOP · Spotify BOTTOM) */
+/* PAGE 1 — Desktop Landscape Balanced 2-Col Zero-Scroll Grid (Image TOP · Spotify BOTTOM) */
 .studio-stage[data-mode="desktop"] .page-grid-main {
-  max-width: 1020px;
+  max-width: 960px;
   height: auto;
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) 112px;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
   grid-template-rows: 206px 202px;
   gap: 16px;
   align-items: stretch;
@@ -3090,22 +3090,46 @@ a {
   padding: 20px;
 }
 
-.studio-stage[data-mode="desktop"] .widget-desktop-note {
+.widget-desktop-about {
+  display: none;
+}
+
+.studio-stage[data-mode="desktop"] .widget-desktop-about {
   grid-column: 2;
   grid-row: 2;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 8px;
+  padding: 20px;
+  text-align: left;
   height: 100%;
 }
 
-.studio-stage[data-mode="desktop"] .notes-icon-row {
-  grid-column: 3;
-  grid-row: 1 / span 2;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-  padding: 4px 0;
+.studio-stage[data-mode="desktop"] .phone-only-about {
+  display: none;
+}
+
+.studio-stage[data-mode="desktop"] .page-grid-passion {
+  max-width: 960px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.studio-stage[data-mode="desktop"] .passion-mini-row {
+  grid-column: 1 / span 3;
+  gap: 16px;
+}
+
+.studio-stage[data-mode="phone"] .passion-card {
+  min-height: 118px;
+  padding: 13px 15px;
+  gap: 8px;
+}
+
+.studio-stage[data-mode="phone"] .passion-serif-title {
+  font-size: 1.75rem;
 }
 
 /* PAGE 2 — Passion & Curation (Shelf · Media · Taste Strip) */

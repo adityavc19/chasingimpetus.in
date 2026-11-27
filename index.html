@@ -33,7 +33,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=25">
+  <link rel="stylesheet" href="./styles.css?v=26">
 </head>
 <body>
   <!-- Outer Top Website Header Bar (always visible outside the phone / tablet frame) -->
@@ -315,7 +315,7 @@
 
               <div class="pages-viewport" id="pages-viewport">
                 <div class="pages-track" id="pages-track" data-page="0">
-                  <!-- PAGE 1: Core Portfolio (Image Top · Projects + Musings + Bio + Drift · Spotify Bottom) -->
+                  <!-- PAGE 1: Core Portfolio (Image Top · Projects + About · Spotify Bottom) -->
                   <div class="os-page" data-page-index="0" aria-label="Home page 1">
                     <div class="page-grid-main">
                       <!-- TOP: Curated Auto-Rotating Artwork Widget -->
@@ -352,26 +352,17 @@
                         </div>
                       </button>
 
-                      <!-- DESKTOP-ONLY: Pure White Pinned Musing Card -->
-                      <button type="button" class="n-widget widget-desktop-note n-solid-white app-launcher" data-app="notes" aria-label="Pinned musing preview. Open Musings.">
+                      <!-- ABOUT CARD (Pure White Nothing OS card on Desktop; crisp About circle on Phone) -->
+                      <button type="button" class="n-widget widget-desktop-about n-solid-white app-launcher" data-app="about" aria-label="Open About Aditya">
                         <div class="desktop-note-head">
-                          <span class="n-card-kicker">MUSINGS</span>
-                          <span class="n-card-date-pill" id="desktop-note-date">OCT 2026</span>
+                          <span class="n-card-kicker">ABOUT</span>
+                          <img src="./assets/icons/orbit-profile.svg" alt="" width="28" height="28" class="orbit-pill-icon">
                         </div>
-                        <h3 class="desktop-note-title" id="desktop-note-title">Designing for Attention in an Age of Infinite Scroll</h3>
-                        <p class="desktop-note-excerpt" id="desktop-note-excerpt">Why physical friction—like tapping an NFC puck or measuring focus directly—beats willpower.</p>
+                        <h3 class="desktop-note-title">Aditya</h3>
+                        <p class="desktop-note-excerpt">Product manager turned product builder, experimenting with AI. Building Material Desk.</p>
                       </button>
 
-                      <!-- NOTHING ORBIT ICON CIRCLES: Musings, Bio, Drift -->
-                      <div class="notes-icon-row">
-                        <button type="button" class="n-icon-tile app-launcher" data-app="notes" aria-label="Open Musings and essays">
-                          <span class="n-icon-circle n-orbit-host">
-                            <img src="./assets/icons/orbit-musings.svg" alt="" width="62" height="62" class="orbit-svg-icon">
-                            <span class="n-icon-badge" id="badge-notes" aria-hidden="true">3</span>
-                          </span>
-                          <span class="n-icon-label">Musings</span>
-                        </button>
-
+                      <div class="notes-icon-row phone-only-about">
                         <button type="button" class="n-icon-tile app-launcher" data-app="about" aria-label="Open About">
                           <span class="n-icon-circle n-orbit-host">
                             <img src="./assets/icons/orbit-profile.svg" alt="" width="62" height="62" class="orbit-svg-icon">
@@ -399,20 +390,33 @@
                     </div>
                   </div>
 
-                  <!-- PAGE 2: Passion & Curation (Shelf · Media · Off the Clock) -->
-                  <div class="os-page" data-page-index="1" aria-label="Home page 2 — Shelf and Media">
+                  <!-- PAGE 2: Musings (Substack sneak peek) · Bookshelf · Media · Taste Strip -->
+                  <div class="os-page" data-page-index="1" aria-label="Home page 2 — Musings, Bookshelf and Media">
                     <div class="page-grid-passion">
-                      <!-- Pure White Shelf Card -->
-                      <button type="button" class="n-widget passion-card n-solid-white app-launcher" data-app="shelf" aria-label="Open Shelf for films and books">
+                      <!-- Pure White Musings Substack Sneak-Peek Card -->
+                      <button type="button" class="n-widget passion-card passion-musings n-solid-white app-launcher" data-app="notes" aria-label="Open Musings — Chasing Impetus on Substack">
+                        <div class="passion-card-top">
+                          <span class="n-card-kicker">MUSINGS · SUBSTACK</span>
+                          <img src="./assets/icons/orbit-musings.svg" alt="" width="28" height="28" class="orbit-pill-icon">
+                        </div>
+                        <div class="passion-card-body">
+                          <span class="passion-serif-title" id="desktop-note-title">Chasing Impetus</span>
+                          <span class="passion-desc" id="desktop-note-excerpt">Why this newsletter? A personal exploration journey to move from autopilot and inertia.</span>
+                        </div>
+                        <span class="n-card-date-pill" id="desktop-note-date">READ SNEAK PEEK →</span>
+                      </button>
+
+                      <!-- Pure White Bookshelf Card -->
+                      <button type="button" class="n-widget passion-card n-solid-white app-launcher" data-app="shelf" aria-label="Open Bookshelf for films and books">
                         <div class="passion-card-top">
                           <span class="n-card-kicker">CURATED LOG</span>
                           <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                         </div>
                         <div class="passion-card-body">
-                          <span class="passion-serif-title">Shelf</span>
-                          <span class="passion-desc">Favorite films &amp; books that shaped how I think and build.</span>
+                          <span class="passion-serif-title">Bookshelf</span>
+                          <span class="passion-desc">Live Letterboxd diary &amp; Goodreads shelf.</span>
                         </div>
-                        <span class="n-card-date-pill">04 FILMS · 03 BOOKS</span>
+                        <span class="n-card-date-pill">FILMS &amp; BOOKS</span>
                       </button>
 
                       <!-- Matte Black Media Card with Nothing Orbit Play Icon -->
@@ -428,15 +432,15 @@
                         <span class="passion-dark-pill">04 REELS &amp; EXPERIMENTS</span>
                       </button>
 
-                      <!-- Compact Off-the-Clock Taste Strip -->
+                      <!-- Compact Taste Strip: Favorite Film (Digger) & Book (Why Machines Learn) -->
                       <div class="passion-mini-row">
                         <button type="button" class="n-widget passion-mini n-solid-dark app-launcher" data-app="shelf">
                           <span class="mono-micro">FAVORITE FILM</span>
-                          <span class="passion-mini-val">In the Mood for Love</span>
+                          <span class="passion-mini-val">Digger</span>
                         </button>
                         <button type="button" class="n-widget passion-mini n-solid-white app-launcher" data-app="shelf">
-                          <span class="n-card-kicker">READING</span>
-                          <span class="passion-mini-val" style="color: #111214;">The Creative Act</span>
+                          <span class="n-card-kicker">BOOK</span>
+                          <span class="passion-mini-val" style="color: #111214;">Why Machines Learn</span>
                         </button>
                       </div>
                     </div>
@@ -447,7 +451,7 @@
               <!-- Interactive 2-Page Dot Indicator (clickable + swipeable!) -->
               <div class="page-dots" role="tablist" aria-label="Home screen pages">
                 <button type="button" class="page-dot active" data-goto-page="0" role="tab" aria-selected="true" aria-label="Page 1: Main"></button>
-                <button type="button" class="page-dot" data-goto-page="1" role="tab" aria-selected="false" aria-label="Page 2: Shelf and Media"></button>
+                <button type="button" class="page-dot" data-goto-page="1" role="tab" aria-selected="false" aria-label="Page 2: Musings, Bookshelf and Media"></button>
               </div>
 
               <!-- Bottom Dock: External Profile Redirects ONLY (LinkedIn, Twitter, GitHub, Email) -->
@@ -503,6 +507,6 @@
     </main>
   </div>
 
-  <script type="module" src="./app.js?v=25"></script>
+  <script type="module" src="./app.js?v=26"></script>
 </body>
 </html>

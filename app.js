@@ -1,4 +1,4 @@
-import { PORTFOLIO_DATA } from "./data.js?v=22";
+import { PORTFOLIO_DATA } from "./data.js?v=26";
 
 // ============================================================================
 // STATE
@@ -429,13 +429,12 @@ function hydrateStaticData() {
   els.deskName.textContent = profile.name;
   els.deskTagline.textContent = profile.tagline;
   els.lockStatusText.textContent = profile.tagline;
-  els.badgeNotes.textContent = String(notes.length);
+  if (els.badgeNotes) els.badgeNotes.textContent = String(notes.length);
 
   const pinned = notes.find((n) => n.pinned) ?? notes[0];
   if (pinned && els.desktopNoteTitle) {
-    els.desktopNoteDate.textContent = pinned.date.toUpperCase();
     els.desktopNoteTitle.textContent = pinned.title;
-    els.desktopNoteExcerpt.textContent = pinned.excerpt;
+    els.desktopNoteExcerpt.textContent = `${pinned.subtitle ? `${pinned.subtitle} — ` : ""}${pinned.excerpt}`;
   }
   if (pinned && els.lockNotifNote) {
     els.lockNotifNote.textContent = pinned.title;
@@ -606,10 +605,10 @@ function setLocked(locked, silent = false) {
 // ============================================================================
 
 const APP_META = {
-  notes: { title: "Musings", subtitle: "ESSAYS & THOUGHTS" },
+  notes: { title: "Musings", subtitle: "SUBSTACK · CHASING IMPETUS" },
   github: { title: "Projects", subtitle: "BUILDS & EXPERIMENTS" },
   media: { title: "Media", subtitle: "VIDEO ESSAYS & VISUALS" },
-  shelf: { title: "Shelf", subtitle: "FILMS & BOOKS LOG" },
+  shelf: { title: "Bookshelf", subtitle: "FILMS & BOOKS LOG" },
   music: { title: "Music", subtitle: "ON ROTATION" },
   about: { title: "Aditya", subtitle: "PRODUCT BUILDER" },
   drift: { title: "Drift", subtitle: "REEL CAPTURE · LIVE FEED" }
@@ -732,82 +731,31 @@ function esc(str) {
 
 function renderNotesApp() {
   const { notes } = PORTFOLIO_DATA;
-
-  if (state.activeNoteId) {
-    const note = notes.find((n) => n.id === state.activeNoteId);
-    if (note) {
-      els.appViewBody.innerHTML = `
-        <button type="button" class="article-back-link" id="note-back-list">← ALL MUSINGS</button>
-        <article class="n-card">
-          <div class="n-card-meta">
-            <span>${esc(note.date)}</span>
-            <span class="tag-pill red">${esc(note.tag)} · ${esc(note.readTime)}</span>
-          </div>
-          <h3 class="n-card-title" style="font-family: var(--font-serif); font-size: 1.55rem; font-weight: 400; line-height: 1.15;">${esc(note.title)}</h3>
-          <div class="article-body">
-            ${note.body.map((p) => `<p>${esc(p)}</p>`).join("")}
-          </div>
-        </article>
-      `;
-      document.getElementById("note-back-list").addEventListener("click", () => {
-        playClickSound(560);
-        state.activeNoteId = null;
-        renderNotesApp();
-      });
-      return;
-    }
-  }
-
-  const tags = ["All", ...new Set(notes.map((n) => n.tag))];
-  const filtered =
-    state.notesFilter === "All"
-      ? notes
-      : notes.filter((n) => n.tag === state.notesFilter);
+  const note = notes[0];
+  if (!note) return;
 
   els.appViewBody.innerHTML = `
-    <div class="chip-row" role="group" aria-label="Filter notes by topic">
-      ${tags
-        .map(
-          (tag) => `
-        <button type="button" class="chip" data-note-tag="${esc(tag)}" aria-pressed="${String(state.notesFilter === tag)}">${esc(tag)}</button>
-      `
-        )
-        .join("")}
-    </div>
-    <div class="cards-grid-2">
-      ${filtered
-        .map(
-          (note) => `
-        <button type="button" class="n-card interactive" data-open-note="${esc(note.id)}">
-          <div class="n-card-meta">
-            <span>${esc(note.date)} · ${esc(note.readTime)}</span>
-            <span class="tag-pill ${note.pinned ? "red" : ""}">${note.pinned ? "PINNED · " : ""}${esc(note.tag)}</span>
-          </div>
-          <h3 class="n-card-title">${esc(note.title)}</h3>
-          <p class="n-card-desc">${esc(note.excerpt)}</p>
-        </button>
-      `
-        )
-        .join("")}
-    </div>
+    <article class="n-card" style="padding: 22px; gap: 12px;">
+      <div class="n-card-meta">
+        <span>${esc(note.date)} · ${esc(note.readTime)}</span>
+        <span class="tag-pill">${esc(note.tag.toUpperCase())}</span>
+      </div>
+      <div>
+        <h3 class="n-card-title" style="font-family: var(--font-serif); font-size: 2rem; font-weight: 400; line-height: 1.05;">${esc(note.title)}</h3>
+        ${note.subtitle ? `<p class="mono-micro" style="margin: 6px 0 0;">${esc(note.subtitle)}</p>` : ""}
+      </div>
+      <div class="article-body">
+        ${note.body.map((p) => `<p>${esc(p)}</p>`).join("")}
+      </div>
+      ${
+        note.url
+          ? `<div style="padding-top: 8px; border-top: 1px dashed var(--border-strong);">
+              <a class="proj-gh-link" href="${esc(note.url)}" target="_blank" rel="noopener noreferrer">READ FULL POST ON SUBSTACK ↗</a>
+            </div>`
+          : ""
+      }
+    </article>
   `;
-
-  els.appViewBody.querySelectorAll("[data-note-tag]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      playClickSound(640);
-      state.notesFilter = btn.dataset.noteTag;
-      renderNotesApp();
-    });
-  });
-
-  els.appViewBody.querySelectorAll("[data-open-note]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      playClickSound(740);
-      state.activeNoteId = btn.dataset.openNote;
-      els.appViewBody.scrollTop = 0;
-      renderNotesApp();
-    });
-  });
 }
 
 // ============================================================================
